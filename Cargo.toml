@@ -1,0 +1,16 @@
+[package]
+name = "ports"
+version = "0.1.0"
+edition = "2021"
+authors = ["Quentin Richert <noreply@richert.co>"]
+description = "List listening ports."
+license = "GPL-3.0-or-later"
+repository = "https://github.com/qrichert/ports.git"
+readme = "README.md"
+keywords = ["ports", "listen", "cli"]
+categories = ["command-line-utilities"]
+
+[profile.release]
+strip = true
+
+[dependencies]
