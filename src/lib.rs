@@ -14,13 +14,4 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-use ports::lsof;
-use std::error::Error;
-
-fn main() -> Result<(), Box<dyn Error>> {
-    let lsof = lsof::Lsof::listening_ports()?;
-
-    print!("{lsof}");
-
-    Ok(())
-}
+pub mod lsof;
