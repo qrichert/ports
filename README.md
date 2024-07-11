@@ -5,3 +5,6 @@
 [![crates.io](https://img.shields.io/crates/d/ports?logo=rust&logoColor=white&color=orange)](https://crates.io/crates/ports)
 
 _List listening ports._
+
+It's sometimes hard to keep track of which process uses which port, or
+what is running in the background.
