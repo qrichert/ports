@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+use crate::cmd::ps::ProcessInfo;
 use std::error::Error;
 use std::fmt;
 use std::process::{Command, Output};
@@ -46,11 +47,12 @@ pub struct ListeningPort {
     pub type_: String,
     pub node: String,
     pub name: String,
+    pub pinfo: Option<ProcessInfo>,
     _cannot_instantiate: std::marker::PhantomData<()>,
 }
 
 impl ListeningPort {
-    fn new() -> Self {
+    pub(crate) fn new() -> Self {
         Self {
             command: String::new(),
             pid: String::new(),
@@ -58,8 +60,14 @@ impl ListeningPort {
             type_: String::new(),
             node: String::new(),
             name: String::new(),
+            pinfo: None,
             _cannot_instantiate: std::marker::PhantomData,
         }
+    }
+
+    pub fn enrich_with_process_info(&mut self, process_info: &[ProcessInfo]) {
+        let pinfo = process_info.iter().find(|process| process.pid == self.pid);
+        self.pinfo = pinfo.cloned();
     }
 }
 
@@ -323,6 +331,7 @@ mod tests {
                 type_: String::new(),
                 node: String::new(),
                 name: String::new(),
+                pinfo: None,
                 _cannot_instantiate: std::marker::PhantomData,
             }
         );
@@ -349,6 +358,7 @@ mod tests {
                 type_: String::from("IPv4"),
                 node: String::from("TCP"),
                 name: String::from("*:333"),
+                pinfo: None,
                 _cannot_instantiate: std::marker::PhantomData,
             }
         );
@@ -523,6 +533,7 @@ This is again not included
                 type_: String::from("<type>"),
                 node: String::from("<node>"),
                 name: String::from("<name>"),
+                pinfo: None,
                 _cannot_instantiate: std::marker::PhantomData
             }],
         );
@@ -568,8 +579,92 @@ This is again not included
                 type_: String::new(),
                 node: String::new(),
                 name: String::new(),
+                pinfo: None,
                 _cannot_instantiate: std::marker::PhantomData
             }],
         );
+    }
+
+    #[test]
+    fn enrich_with_process_info_regular() {
+        let mut port = ListeningPort {
+            command: String::from("docker-pr"),
+            pid: String::from("2673"),
+            user: String::from("root"),
+            type_: String::from("IPv4"),
+            node: String::from("TCP"),
+            name: String::from("*:333"),
+            pinfo: None,
+            _cannot_instantiate: std::marker::PhantomData,
+        };
+
+        let mut process = ProcessInfo::new();
+        process.user = String::from("root");
+        process.pid = String::from("2673");
+        process.pc_cpu = String::from("0.0");
+        process.pc_mem = String::from("0.0");
+        process.start = String::from("09:27");
+        process.time = String::from("0:02");
+        process.command =  String::from("/usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 333 -container-ip 172.19.0.4 -container-port 22");
+
+        let mut other_process = ProcessInfo::new();
+        other_process.user = String::from("colord");
+        other_process.pid = String::from("874");
+        other_process.pc_cpu = String::from("0.0");
+        other_process.pc_mem = String::from("0.1");
+        other_process.start = String::from("09:27");
+        other_process.time = String::from("0:00");
+        other_process.command = String::from("/usr/libexec/colord");
+
+        port.enrich_with_process_info(&[process.clone(), other_process]);
+
+        let pinfo = port.pinfo.unwrap();
+        assert_eq!(pinfo.pid, port.pid);
+        assert_eq!(pinfo, process);
+    }
+
+    #[test]
+    fn enrich_with_process_info_missing_process() {
+        let mut port = ListeningPort {
+            command: String::from("docker-pr"),
+            pid: String::from("2673"),
+            user: String::from("root"),
+            type_: String::from("IPv4"),
+            node: String::from("TCP"),
+            name: String::from("*:333"),
+            pinfo: None,
+            _cannot_instantiate: std::marker::PhantomData,
+        };
+
+        let mut other_process = ProcessInfo::new();
+        other_process.user = String::from("colord");
+        other_process.pid = String::from("874");
+        other_process.pc_cpu = String::from("0.0");
+        other_process.pc_mem = String::from("0.1");
+        other_process.start = String::from("09:27");
+        other_process.time = String::from("0:00");
+        other_process.command = String::from("/usr/libexec/colord");
+
+        port.enrich_with_process_info(&[other_process]);
+
+        assert!(port.pinfo.is_none());
+    }
+
+    #[test]
+    fn enrich_with_process_info_missing_no_processes() {
+        let mut port = ListeningPort {
+            command: String::from("docker-pr"),
+            pid: String::from("2673"),
+            user: String::from("root"),
+            type_: String::from("IPv4"),
+            node: String::from("TCP"),
+            name: String::from("*:333"),
+            pinfo: None,
+            _cannot_instantiate: std::marker::PhantomData,
+        };
+
+        port.enrich_with_process_info(&[]);
+
+        assert!(port.pinfo.is_none());
     }
 }

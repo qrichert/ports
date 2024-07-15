@@ -17,5 +17,7 @@
 #![allow(clippy::module_name_repetitions)]
 
 pub mod lsof;
+pub mod ps;
 
 pub use lsof::Lsof;
+pub use ps::Ps;
