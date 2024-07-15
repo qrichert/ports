@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+use crate::cmd::ps::ProcessInfo;
 use std::error::Error;
 use std::fmt;
 use std::process::{Command, Output};
@@ -46,6 +47,7 @@ pub struct ListeningPort {
     pub type_: String,
     pub node: String,
     pub name: String,
+    pub pinfo: Option<ProcessInfo>,
     _cannot_instantiate: std::marker::PhantomData<()>,
 }
 
@@ -58,8 +60,14 @@ impl ListeningPort {
             type_: String::new(),
             node: String::new(),
             name: String::new(),
+            pinfo: None,
             _cannot_instantiate: std::marker::PhantomData,
         }
+    }
+
+    pub fn enrich_with_process_info(&mut self, process_info: &[ProcessInfo]) {
+        let pinfo = process_info.iter().find(|process| process.pid == self.pid);
+        self.pinfo = pinfo.cloned();
     }
 }
 
@@ -323,6 +331,7 @@ mod tests {
                 type_: String::new(),
                 node: String::new(),
                 name: String::new(),
+                pinfo: None,
                 _cannot_instantiate: std::marker::PhantomData,
             }
         );
@@ -349,6 +358,7 @@ mod tests {
                 type_: String::from("IPv4"),
                 node: String::from("TCP"),
                 name: String::from("*:333"),
+                pinfo: None,
                 _cannot_instantiate: std::marker::PhantomData,
             }
         );
@@ -523,6 +533,7 @@ This is again not included
                 type_: String::from("<type>"),
                 node: String::from("<node>"),
                 name: String::from("<name>"),
+                pinfo: None,
                 _cannot_instantiate: std::marker::PhantomData
             }],
         );
@@ -568,8 +579,11 @@ This is again not included
                 type_: String::new(),
                 node: String::new(),
                 name: String::new(),
+                pinfo: None,
                 _cannot_instantiate: std::marker::PhantomData
             }],
         );
     }
+
+    // TODO: Test non-existing pid
 }

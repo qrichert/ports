@@ -16,18 +16,35 @@
 
 #![cfg(not(tarpaulin_include))]
 
-use ports::cmd::Lsof;
+use ports::cmd::{Lsof, Ps};
+use std::env;
 use std::error::Error;
 use std::{fmt, fmt::Write};
 
 fn main() -> Result<(), Box<dyn Error>> {
+    let mut args = env::args();
+    args.next();
+
+    if let Some(arg) = args.next() {
+        return match arg.as_str() {
+            "-vv" | "--verbose" => verbose(),
+            "-vvv" | "--very-verbose" => very_verbose(),
+            arg => {
+                eprintln!("Unknown argument: '{arg}'");
+                std::process::exit(2)
+            }
+        };
+    }
+
+    regular()
+}
+
+fn regular() -> Result<(), Box<dyn Error>> {
     let listening_ports = Lsof::listening_ports()?;
 
     if listening_ports.is_empty() {
         return Ok(());
     }
-    // TODO: Enable more info from `ps aux`.
-    //   let ps = cmd::Ps::running_processes();
 
     let listening_ports: Vec<Vec<&String>> = listening_ports
         .iter()
@@ -54,6 +71,160 @@ fn main() -> Result<(), Box<dyn Error>> {
                 fmt::Alignment::Left,
                 fmt::Alignment::Left,
                 fmt::Alignment::Right
+            ],
+            &listening_ports
+        )
+    );
+
+    Ok(())
+}
+
+fn verbose() -> Result<(), Box<dyn Error>> {
+    let mut listening_ports = Lsof::listening_ports()?;
+
+    if listening_ports.is_empty() {
+        return Ok(());
+    }
+
+    // Enable more info from `ps aux`.
+    let pids: Vec<&String> = listening_ports.iter().map(|port| &port.pid).collect();
+    let processes_info = Ps::processes_info(&pids)?;
+
+    for port in &mut listening_ports {
+        port.enrich_with_process_info(&processes_info);
+    }
+
+    let empty = String::new();
+    let listening_ports: Vec<Vec<&String>> = listening_ports
+        .iter()
+        .map(|port| {
+            vec![
+                &port.command,
+                &port.pid,
+                &port.user,
+                &port.type_,
+                &port.node,
+                &port.name,
+                // port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.user),
+                // port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.pid),
+                port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.pc_cpu),
+                port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.pc_mem),
+                // port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.started),
+                // port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.time),
+                port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.command),
+            ]
+        })
+        .collect();
+
+    print!(
+        "{}",
+        to_table(
+            &[
+                "COMMAND",
+                "PID",
+                "USER",
+                "TYPE",
+                "NODE",
+                "HOST:PORT",
+                // "USER",
+                // "PID",
+                "%CPU",
+                "%MEM",
+                // "START",
+                // "TIME",
+                "COMMAND"
+            ],
+            &[
+                fmt::Alignment::Left,
+                fmt::Alignment::Right,
+                fmt::Alignment::Left,
+                fmt::Alignment::Left,
+                fmt::Alignment::Left,
+                fmt::Alignment::Right,
+                // fmt::Alignment::Left,
+                // fmt::Alignment::Right,
+                fmt::Alignment::Right,
+                fmt::Alignment::Right,
+                // fmt::Alignment::Right,
+                // fmt::Alignment::Right,
+                fmt::Alignment::Left,
+            ],
+            &listening_ports
+        )
+    );
+
+    Ok(())
+}
+
+fn very_verbose() -> Result<(), Box<dyn Error>> {
+    let mut listening_ports = Lsof::listening_ports()?;
+
+    if listening_ports.is_empty() {
+        return Ok(());
+    }
+
+    // Enable more info from `ps aux`.
+    let pids: Vec<&String> = listening_ports.iter().map(|port| &port.pid).collect();
+    let processes_info = Ps::processes_info(&pids)?;
+
+    for port in &mut listening_ports {
+        port.enrich_with_process_info(&processes_info);
+    }
+
+    let empty = String::new();
+    let listening_ports: Vec<Vec<&String>> = listening_ports
+        .iter()
+        .map(|port| {
+            vec![
+                &port.command,
+                &port.pid,
+                &port.user,
+                &port.type_,
+                &port.node,
+                &port.name,
+                // port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.user),
+                // port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.pid),
+                port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.pc_cpu),
+                port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.pc_mem),
+                port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.start),
+                port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.time),
+                port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.command),
+            ]
+        })
+        .collect();
+
+    print!(
+        "{}",
+        to_table(
+            &[
+                "COMMAND",
+                "PID",
+                "USER",
+                "TYPE",
+                "NODE",
+                "HOST:PORT",
+                // "USER",
+                // "PID",
+                "%CPU",
+                "%MEM",
+                "START",
+                "TIME",
+                "COMMAND"
+            ],
+            &[
+                fmt::Alignment::Left,
+                fmt::Alignment::Right,
+                fmt::Alignment::Left,
+                fmt::Alignment::Left,
+                fmt::Alignment::Left,
+                fmt::Alignment::Right,
+                // fmt::Alignment::Left,
+                // fmt::Alignment::Right,
+                fmt::Alignment::Right,
+                fmt::Alignment::Right,
+                fmt::Alignment::Right,
+                fmt::Alignment::Right,
+                fmt::Alignment::Left,
             ],
             &listening_ports
         )

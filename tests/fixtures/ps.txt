@@ -1,0 +1,412 @@
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  0.0  0.1 168532 13232 ?        Ss   09:27   0:13 /sbin/init splash
+root           2  0.0  0.0      0     0 ?        S    09:27   0:00 [kthreadd]
+root           3  0.0  0.0      0     0 ?        I<   09:27   0:00 [rcu_gp]
+root           4  0.0  0.0      0     0 ?        I<   09:27   0:00 [rcu_par_gp]
+root           5  0.0  0.0      0     0 ?        I<   09:27   0:00 [slub_flushwq]
+root           6  0.0  0.0      0     0 ?        I<   09:27   0:00 [netns]
+root           8  0.0  0.0      0     0 ?        I<   09:27   0:00 [kworker/0:0H-events_highpri]
+root          11  0.0  0.0      0     0 ?        I<   09:27   0:00 [mm_percpu_wq]
+root          12  0.0  0.0      0     0 ?        I    09:27   0:00 [rcu_tasks_kthread]
+root          13  0.0  0.0      0     0 ?        I    09:27   0:00 [rcu_tasks_rude_kthread]
+root          14  0.0  0.0      0     0 ?        I    09:27   0:00 [rcu_tasks_trace_kthread]
+root          15  0.0  0.0      0     0 ?        S    09:27   0:01 [ksoftirqd/0]
+root          16  0.1  0.0      0     0 ?        I    09:27   0:21 [rcu_preempt]
+root          17  0.0  0.0      0     0 ?        S    09:27   0:00 [migration/0]
+root          18  0.0  0.0      0     0 ?        S    09:27   0:00 [idle_inject/0]
+root          19  0.0  0.0      0     0 ?        S    09:27   0:00 [cpuhp/0]
+root          20  0.0  0.0      0     0 ?        S    09:27   0:00 [cpuhp/1]
+root          21  0.0  0.0      0     0 ?        S    09:27   0:00 [idle_inject/1]
+root          22  0.0  0.0      0     0 ?        S    09:27   0:00 [migration/1]
+root          23  0.0  0.0      0     0 ?        S    09:27   0:01 [ksoftirqd/1]
+root          25  0.0  0.0      0     0 ?        I<   09:27   0:00 [kworker/1:0H-events_highpri]
+root          26  0.0  0.0      0     0 ?        S    09:27   0:00 [cpuhp/2]
+root          27  0.0  0.0      0     0 ?        S    09:27   0:00 [idle_inject/2]
+root          28  0.0  0.0      0     0 ?        S    09:27   0:00 [migration/2]
+root          29  0.0  0.0      0     0 ?        S    09:27   0:01 [ksoftirqd/2]
+root          31  0.0  0.0      0     0 ?        I<   09:27   0:00 [kworker/2:0H-events_highpri]
+root          32  0.0  0.0      0     0 ?        S    09:27   0:00 [cpuhp/3]
+root          33  0.0  0.0      0     0 ?        S    09:27   0:00 [idle_inject/3]
+root          34  0.0  0.0      0     0 ?        S    09:27   0:00 [migration/3]
+root          35  0.0  0.0      0     0 ?        S    09:27   0:01 [ksoftirqd/3]
+root          37  0.0  0.0      0     0 ?        I<   09:27   0:00 [kworker/3:0H-kblockd]
+root          38  0.0  0.0      0     0 ?        S    09:27   0:00 [cpuhp/4]
+root          39  0.0  0.0      0     0 ?        S    09:27   0:00 [idle_inject/4]
+root          40  0.0  0.0      0     0 ?        S    09:27   0:00 [migration/4]
+root          41  0.0  0.0      0     0 ?        S    09:27   0:00 [ksoftirqd/4]
+root          43  0.0  0.0      0     0 ?        I<   09:27   0:00 [kworker/4:0H-events_highpri]
+root          44  0.0  0.0      0     0 ?        S    09:27   0:00 [cpuhp/5]
+root          45  0.0  0.0      0     0 ?        S    09:27   0:00 [idle_inject/5]
+root          46  0.0  0.0      0     0 ?        S    09:27   0:00 [migration/5]
+root          47  0.0  0.0      0     0 ?        S    09:27   0:01 [ksoftirqd/5]
+root          49  0.0  0.0      0     0 ?        I<   09:27   0:00 [kworker/5:0H-events_highpri]
+root          50  0.0  0.0      0     0 ?        S    09:27   0:00 [kdevtmpfs]
+root          51  0.0  0.0      0     0 ?        I<   09:27   0:00 [inet_frag_wq]
+root          53  0.0  0.0      0     0 ?        S    09:27   0:00 [kauditd]
+root          55  0.0  0.0      0     0 ?        S    09:27   0:00 [khungtaskd]
+root          56  0.0  0.0      0     0 ?        S    09:27   0:00 [oom_reaper]
+root          58  0.0  0.0      0     0 ?        I<   09:27   0:00 [writeback]
+root          59  0.0  0.0      0     0 ?        S    09:27   0:10 [kcompactd0]
+root          60  0.0  0.0      0     0 ?        SN   09:27   0:00 [ksmd]
+root          61  0.0  0.0      0     0 ?        SN   09:27   0:00 [khugepaged]
+root          62  0.0  0.0      0     0 ?        I<   09:27   0:00 [kintegrityd]
+root          63  0.0  0.0      0     0 ?        I<   09:27   0:00 [kblockd]
+root          64  0.0  0.0      0     0 ?        I<   09:27   0:00 [blkcg_punt_bio]
+root          67  0.0  0.0      0     0 ?        I<   09:27   0:00 [tpm_dev_wq]
+root          68  0.0  0.0      0     0 ?        I<   09:27   0:00 [ata_sff]
+root          69  0.0  0.0      0     0 ?        I<   09:27   0:00 [md]
+root          70  0.0  0.0      0     0 ?        I<   09:27   0:00 [md_bitmap]
+root          71  0.0  0.0      0     0 ?        I<   09:27   0:00 [edac-poller]
+root          72  0.0  0.0      0     0 ?        I<   09:27   0:00 [devfreq_wq]
+root          73  0.0  0.0      0     0 ?        S    09:27   0:00 [watchdogd]
+root          74  0.0  0.0      0     0 ?        I<   09:27   0:00 [kworker/0:1H-kblockd]
+root          75  0.0  0.0      0     0 ?        S    09:27   0:03 [kswapd0]
+root          76  0.0  0.0      0     0 ?        S    09:27   0:00 [ecryptfs-kthread]
+root          78  0.0  0.0      0     0 ?        I<   09:27   0:00 [kthrotld]
+root          79  0.0  0.0      0     0 ?        I<   09:27   0:00 [acpi_thermal_pm]
+root          80  0.0  0.0      0     0 ?        S    09:27   0:00 [scsi_eh_0]
+root          81  0.0  0.0      0     0 ?        I<   09:27   0:00 [scsi_tmf_0]
+root          82  0.0  0.0      0     0 ?        S    09:27   0:00 [scsi_eh_1]
+root          83  0.0  0.0      0     0 ?        I<   09:27   0:00 [scsi_tmf_1]
+root          88  0.0  0.0      0     0 ?        I<   09:27   0:00 [mld]
+root          89  0.0  0.0      0     0 ?        I<   09:27   0:01 [kworker/2:1H-kblockd]
+root          90  0.0  0.0      0     0 ?        I<   09:27   0:00 [ipv6_addrconf]
+root          99  0.0  0.0      0     0 ?        I<   09:27   0:00 [kstrp]
+root         101  0.0  0.0      0     0 ?        I<   09:27   0:00 [kworker/u13:0]
+root         105  0.0  0.0      0     0 ?        I<   09:27   0:00 [charger_manager]
+root         156  0.0  0.0      0     0 ?        I<   09:27   0:00 [kworker/5:1H-kblockd]
+root         157  0.0  0.0      0     0 ?        I<   09:27   0:00 [kworker/4:1H-kblockd]
+root         158  0.0  0.0      0     0 ?        I<   09:27   0:03 [kworker/1:1H-kblockd]
+root         161  0.0  0.0      0     0 ?        S    09:27   0:00 [scsi_eh_2]
+root         162  0.0  0.0      0     0 ?        I<   09:27   0:00 [scsi_tmf_2]
+root         172  0.0  0.0      0     0 ?        I<   09:27   0:01 [kworker/3:2H-kblockd]
+root         199  0.0  0.0      0     0 ?        S    09:27   0:07 [jbd2/sda3-8]
+root         200  0.0  0.0      0     0 ?        I<   09:27   0:00 [ext4-rsv-conver]
+root         239  0.0  0.3  65136 32512 ?        S<s  09:27   0:02 /lib/systemd/systemd-journald
+root         269  0.0  0.0      0     0 ?        S    09:27   0:00 [irq/18-vmwgfx]
+root         270  0.0  0.0      0     0 ?        I<   09:27   0:00 [ttm]
+root         298  0.0  0.0  26924  6784 ?        Ss   09:27   0:02 /lib/systemd/systemd-udevd
+root         413  0.0  0.0      0     0 ?        I<   09:27   0:00 [cryptd]
+systemd+     567  0.1  0.0  14836  6784 ?        Ss   09:27   0:18 /lib/systemd/systemd-oomd
+systemd+     580  0.0  0.1  26332 13936 ?        Ss   09:27   0:03 /lib/systemd/systemd-resolved
+root         719  0.0  0.0 240264  7504 ?        Ssl  09:27   0:01 /usr/libexec/accounts-daemon
+root         720  0.0  0.0   2816  1792 ?        Ss   09:27   0:01 /usr/sbin/acpid
+avahi        723  0.0  0.0   7772  3456 ?        Ss   09:27   0:01 avahi-daemon: running [quentin-rdr.local]
+root         724  0.0  0.0   9500  2816 ?        Ss   09:27   0:00 /usr/sbin/cron -f -P
+message+     726  0.0  0.0  11060  6144 ?        Ss   09:27   0:10 @dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+root         728  0.0  0.1 335364 18880 ?        Ssl  09:27   0:06 /usr/sbin/NetworkManager --no-daemon
+root         734  0.0  0.0  82700  3840 ?        Ssl  09:27   0:00 /usr/sbin/irqbalance --foreground
+root         736  0.0  0.1  41172 20864 ?        Ss   09:27   0:00 /usr/bin/python3 /usr/bin/networkd-dispatcher --run-startup-triggers
+root         738  0.0  0.0 242960 10560 ?        Ssl  09:27   0:00 /usr/libexec/polkitd --no-debug
+root         740  0.0  0.0 240108  7296 ?        Ssl  09:27   0:00 /usr/libexec/power-profiles-daemon
+syslog       742  0.0  0.0 222404  5504 ?        Ssl  09:27   0:00 /usr/sbin/rsyslogd -n -iNONE
+root         744  0.0  0.3 1689672 33472 ?       Ssl  09:27   0:11 /usr/lib/snapd/snapd
+root         746  0.0  0.0 236388  6656 ?        Ssl  09:27   0:00 /usr/libexec/switcheroo-control
+root         748  0.0  0.0  23652  7976 ?        Ss   09:27   0:01 /lib/systemd/systemd-logind
+root         750  0.0  0.1 393480 13224 ?        Ssl  09:27   0:05 /usr/libexec/udisks2/udisksd
+root         757  0.0  0.0  16504  6400 ?        Ss   09:27   0:00 /sbin/wpa_supplicant -u -s -O /run/wpa_supplicant
+avahi        764  0.0  0.0   7444  1288 ?        S    09:27   0:00 avahi-daemon: chroot helper
+root         808  0.0  0.1 317972 12092 ?        Ssl  09:27   0:00 /usr/sbin/ModemManager
+root         816  0.0  0.1  74032 14336 ?        Ss   09:27   0:00 /usr/sbin/cupsd -l
+root         828  0.1  0.4 2097112 50588 ?       Ssl  09:27   0:16 /usr/bin/containerd
+root         855  0.0  0.2 118160 23020 ?        Ssl  09:27   0:00 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal
+colord       874  0.0  0.1 245332 12904 ?        Ssl  09:27   0:00 /usr/libexec/colord
+kernoops     947  0.0  0.0  13092  2220 ?        Ss   09:27   0:00 /usr/sbin/kerneloops --test
+kernoops     958  0.0  0.0  13092  2196 ?        Ss   09:27   0:00 /usr/sbin/kerneloops
+lp           968  0.0  0.0  16288  6656 ?        S    09:27   0:00 /usr/lib/cups/notifier/dbus dbus://
+root         971  0.0  0.1 172804 11648 ?        Ssl  09:27   0:01 /usr/sbin/cups-browsed
+root         998  0.9  1.0 5097496 106960 ?      Ssl  09:27   2:13 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+root        2493  0.0  0.0 1819600 3584 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8024 -container-ip 172.19.0.2 -container-port 5432
+root        2500  0.0  0.0 1746124 3712 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8024 -container-ip 172.19.0.2 -container-port 5432
+root        2528  0.0  0.0 1745868 3584 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8025 -container-ip 172.19.0.3 -container-port 80
+root        2535  0.0  0.0 1893844 4096 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8025 -container-ip 172.19.0.3 -container-port 80
+root        2546  0.0  0.0 1672136 3584 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8081 -container-ip 172.22.0.3 -container-port 3000
+root        2554  0.0  0.0 1746124 3712 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8081 -container-ip 172.22.0.3 -container-port 3000
+root        2562  0.0  0.0 1819856 3584 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 9229 -container-ip 172.22.0.3 -container-port 9229
+root        2572  0.0  0.0 1968216 5120 ?        Sl   09:27   0:04 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 9229 -container-ip 172.22.0.3 -container-port 9229
+root        2591  0.0  0.1 1238460 13340 ?       Sl   09:27   0:01 /usr/bin/containerd-shim-runc-v2 -namespace moby -id aa3f06adf05ed3378f9d64cad50ebe1fbd5766a4b9da40e19b9bbb957d5816ce -address /run/containerd/containerd.sock
+root        2592  0.0  0.1 1238716 13448 ?       Sl   09:27   0:01 /usr/bin/containerd-shim-runc-v2 -namespace moby -id 32766a9893c5e7634443cf238a34ea0a739340f6f022a5521928a3bd25524c4b -address /run/containerd/containerd.sock
+root        2662  0.0  0.1 1238460 13504 ?       Sl   09:27   0:01 /usr/bin/containerd-shim-runc-v2 -namespace moby -id 36ec1fb7159c72f8103f1833020a9d5b61ebefc29b1e8a5dc560b95d3a8b9ffc -address /run/containerd/containerd.sock
+root        2673  0.0  0.0 1745868 3712 ?        Sl   09:27   0:02 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 333 -container-ip 172.19.0.4 -container-port 22
+root        2674  0.0  0.0 1745868 3584 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8080 -container-ip 172.22.0.4 -container-port 3000
+root        2681  0.0  0.0 1671880 3584 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 333 -container-ip 172.19.0.4 -container-port 22
+root        2690  0.0  0.0 1672392 3456 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8080 -container-ip 172.22.0.4 -container-port 3000
+root        2702  0.0  0.0 1819856 3712 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8000 -container-ip 172.19.0.4 -container-port 8000
+root        2718  0.0  0.0 1745868 3328 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8000 -container-ip 172.19.0.4 -container-port 8000
+root        2731  0.0  0.0 1672136 3712 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8001 -container-ip 172.19.0.4 -container-port 8001
+root        2740  0.0  0.0 1819856 3712 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8001 -container-ip 172.19.0.4 -container-port 8001
+root        2750  0.0  0.0 1672136 3584 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8002 -container-ip 172.19.0.4 -container-port 8002
+root        2762  0.0  0.0 1746124 3456 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8002 -container-ip 172.19.0.4 -container-port 8002
+root        2766  0.0  0.1 1238460 13216 ?       Sl   09:27   0:01 /usr/bin/containerd-shim-runc-v2 -namespace moby -id 0a610d1c9f6d427c4c4fcdbaddcaa9f3d1e24441b63ed2d0007ca5e6ab084489 -address /run/containerd/containerd.sock
+root        2771  0.0  0.0 1672392 3456 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8003 -container-ip 172.19.0.4 -container-port 8003
+root        2790  0.0  0.0 1672136 3712 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8003 -container-ip 172.19.0.4 -container-port 8003
+systemd+    2791  0.1  0.0  16520  2304 ?        Ssl  09:27   0:17 redis-server
+root        2801  0.0  0.0 1672136 3456 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8004 -container-ip 172.19.0.4 -container-port 8004
+70          2804  0.0  0.1 159376 16768 ?        Ss   09:27   0:00 postgres
+root        2811  0.0  0.0 1746124 3328 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8004 -container-ip 172.19.0.4 -container-port 8004
+root        2828  0.0  0.0 1672392 3712 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8005 -container-ip 172.19.0.4 -container-port 8005
+root        2838  0.0  0.0 1598404 3584 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8005 -container-ip 172.19.0.4 -container-port 8005
+5050        2845  0.0  0.1  23340 21184 ?        Ss   09:27   0:03 /venv/bin/python3 /venv/bin/gunicorn --timeout 86400 --bind [::]:80 -w 1 --threads 25 --access-logfile - -c gunicorn_config.py run_pgadmin:app
+root        2847  0.0  0.0 1746124 3584 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8006 -container-ip 172.19.0.4 -container-port 8006
+root        2862  0.0  0.0 1745868 3584 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8006 -container-ip 172.19.0.4 -container-port 8006
+root        2870  0.0  0.0 1819600 3712 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8007 -container-ip 172.19.0.4 -container-port 8007
+root        2878  0.0  0.0 1672136 3840 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8007 -container-ip 172.19.0.4 -container-port 8007
+root        2896  0.0  0.0 1893844 3456 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8008 -container-ip 172.19.0.4 -container-port 8008
+root        2902  0.0  0.0 1819600 3712 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8008 -container-ip 172.19.0.4 -container-port 8008
+root        2908  0.0  0.0   1580   768 ?        Ss   09:27   0:00 /bin/sh /usr/local/bin/ep dev
+root        2924  0.0  0.0 1672136 3584 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8009 -container-ip 172.19.0.4 -container-port 8009
+root        2925  0.0  0.1 1238716 13412 ?       Sl   09:27   0:01 /usr/bin/containerd-shim-runc-v2 -namespace moby -id 63109d56d824e6cb876015eecef6523d03079c7efd5ce21708a81f3b850d826e -address /run/containerd/containerd.sock
+root        2936  0.0  0.0 1819600 3840 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8009 -container-ip 172.19.0.4 -container-port 8009
+root        2950  0.0  0.0 1745868 3840 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8010 -container-ip 172.19.0.4 -container-port 8010
+root        2962  0.0  0.0 1893588 3840 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8010 -container-ip 172.19.0.4 -container-port 8010
+root        2971  0.0  0.0 1819600 3456 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8011 -container-ip 172.19.0.4 -container-port 8011
+root        3001  0.0  0.0 1672392 3584 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8011 -container-ip 172.19.0.4 -container-port 8011
+root        3011  0.0  0.0 1745868 3456 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8012 -container-ip 172.19.0.4 -container-port 8012
+root        3024  0.0  0.0 1671880 3584 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8012 -container-ip 172.19.0.4 -container-port 8012
+root        3034  0.0  0.0 1745868 3328 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8013 -container-ip 172.19.0.4 -container-port 8013
+root        3042  0.0  0.0 1819600 3584 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8013 -container-ip 172.19.0.4 -container-port 8013
+root        3048  0.0  0.0 1819600 3840 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8014 -container-ip 172.19.0.4 -container-port 8014
+root        3063  0.0  0.0 1746124 3584 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8014 -container-ip 172.19.0.4 -container-port 8014
+root        3069  0.0  0.0 1746124 3584 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8015 -container-ip 172.19.0.4 -container-port 8015
+root        3081  0.0  0.0 1745612 3712 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8015 -container-ip 172.19.0.4 -container-port 8015
+root        3091  0.0  0.0 1672392 3456 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8016 -container-ip 172.19.0.4 -container-port 8016
+root        3101  0.0  0.0 1598404 3456 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8016 -container-ip 172.19.0.4 -container-port 8016
+root        3111  0.0  0.0   1592   768 ?        Ss   09:27   0:00 /bin/sh /usr/local/bin/ep server
+root        3112  0.0  0.0 1672136 3712 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8017 -container-ip 172.19.0.4 -container-port 8017
+root        3125  0.0  0.0 1893588 3456 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8017 -container-ip 172.19.0.4 -container-port 8017
+root        3136  0.0  0.0 1819600 3712 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8018 -container-ip 172.19.0.4 -container-port 8018
+root        3145  0.0  0.0 1746124 3456 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8018 -container-ip 172.19.0.4 -container-port 8018
+root        3156  0.0  0.0 1672392 3584 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8019 -container-ip 172.19.0.4 -container-port 8019
+root        3168  0.0  0.0 1745868 3712 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8019 -container-ip 172.19.0.4 -container-port 8019
+root        3177  0.0  0.0 1746124 3584 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8020 -container-ip 172.19.0.4 -container-port 8020
+root        3189  0.0  0.0 1745868 3712 ?        Sl   09:27   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 8020 -container-ip 172.19.0.4 -container-port 8020
+root        3364  0.0  0.3 640932 40568 ?        Sl   09:27   0:00 npm
+root        3388  0.0  0.7 684216 75188 ?        Sl   09:27   0:01 node svc
+root        3445  0.0  0.1 1238716 13264 ?       Sl   09:27   0:01 /usr/bin/containerd-shim-runc-v2 -namespace moby -id 313f2c85c135b3c5d4a2327b2b1813dfc84c4bafae4f5078418cd04ea7c526f7 -address /run/containerd/containerd.sock
+root        3469  0.0  0.0   2792  1408 ?        Ss   09:27   0:00 sleep infinity
+root        3509  0.0  0.0   3888  1924 ?        Ss   09:27   0:00 /usr/sbin/cron
+root        3515  0.0  0.0  15432  5332 ?        Ss   09:27   0:00 sshd: /usr/sbin/sshd [listener] 0 of 10-100 startups
+root        3517  0.1  0.0 134520  6116 ?        Ssl  09:27   0:24 /usr/bin/redis-server *:6379
+root        3523  0.0  0.4 641784 43196 ?        Sl   09:27   0:00 node /opt/webat/node_modules/.bin/nodemon --inspect=0.0.0.0:9229 server.js
+root        3564  0.0  0.4 657640 51332 ?        Sl   09:27   0:02 node --inspect=0.0.0.0:9229 server.js
+root        4091  0.0  0.0 284092  2176 ?        Sl   09:27   0:06 /usr/bin/VBoxDRMClient
+root        4094  0.0  0.0 290148  3200 ?        Sl   09:27   0:02 /usr/sbin/VBoxService --pidfile /var/run/vboxadd-service.sh
+5050        4353  0.1  1.2 142052 130788 ?       Sl   09:27   0:19 /venv/bin/python3 /venv/bin/gunicorn --timeout 86400 --bind [::]:80 -w 1 --threads 25 --access-logfile - -c gunicorn_config.py run_pgadmin:app
+70          4368  0.0  0.0 159444  2764 ?        Ss   09:27   0:00 postgres: checkpointer process   
+70          4369  0.0  0.0 159372  3404 ?        Ss   09:27   0:00 postgres: writer process   
+70          4371  0.0  0.0 159444  2508 ?        Ss   09:27   0:00 postgres: wal writer process   
+70          4373  0.0  0.0 159920  4684 ?        Ss   09:27   0:00 postgres: autovacuum launcher process   
+70          4374  0.0  0.0  14504  2252 ?        Ss   09:27   0:00 postgres: stats collector process   
+root        4603  0.0  0.0 241236  8960 ?        Ssl  09:27   0:00 /usr/sbin/gdm3
+root        4608  0.0  0.0 317936 10496 ?        Sl   09:27   0:00 gdm-session-worker [pam/gdm-autologin]
+quentin     4613  0.0  0.1  18328 11008 ?        Ss   09:27   0:10 /lib/systemd/systemd --user
+quentin     4614  0.0  0.0 104616  5908 ?        S    09:27   0:00 (sd-pam)
+quentin     4620  0.0  0.1 308784 20480 ?        Ss   09:27   0:10 /usr/bin/appimagelauncherd
+quentin     4621  0.0  0.0  39576  6016 ?        S<sl 09:27   0:00 /usr/bin/pipewire
+quentin     4622  0.0  0.0  23464  6016 ?        Ssl  09:27   0:00 /usr/bin/pipewire-media-session
+quentin     4623  0.0  0.2 1948964 29252 ?       S<sl 09:27   0:03 /usr/bin/pulseaudio --daemonize=no --log-target=journal
+quentin     4632  0.0  0.0 388392  7712 ?        SLl  09:27   0:00 /usr/bin/gnome-keyring-daemon --daemonize --login
+rtkit       4634  0.0  0.0 154004  3328 ?        SNsl 09:27   0:00 /usr/libexec/rtkit-daemon
+quentin     4643  0.0  0.0 162396  5760 tty2     Ssl+ 09:27   0:00 /usr/libexec/gdm-wayland-session env GNOME_SHELL_SESSION_MODE=ubuntu /usr/bin/gnome-session --session=ubuntu
+quentin     4644  0.0  0.0  10136  5888 ?        Ss   09:27   0:02 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+quentin     4650  0.0  0.1 223048 15104 tty2     Sl+  09:27   0:00 /usr/libexec/gnome-session-binary --session=ubuntu
+quentin     4652  0.0  0.0 610644  7296 ?        Ssl  09:27   0:00 /usr/libexec/xdg-document-portal
+quentin     4673  0.0  0.0 236152  6144 ?        Ssl  09:27   0:00 /usr/libexec/xdg-permission-store
+root        4686  0.0  0.0   2796  1792 ?        Ss   09:27   0:00 fusermount3 -o rw,nosuid,nodev,fsname=portal,auto_unmount,subtype=portal -- /run/user/1000/doc
+quentin     4715  0.0  0.0  91916  5504 ?        Ssl  09:27   0:00 /usr/libexec/gnome-session-ctl --monitor
+quentin     4725  0.0  0.0 240768  7552 ?        Ssl  09:27   0:00 /usr/libexec/gvfsd
+quentin     4732  0.0  0.0 380896  6400 ?        Sl   09:27   0:00 /usr/libexec/gvfsd-fuse /run/user/1000/gvfs -f
+quentin     4737  0.0  0.1 592896 17408 ?        Ssl  09:27   0:00 /usr/libexec/gnome-session-binary --systemd-service --session=ubuntu
+quentin     4766  0.0  0.0 309620  7552 ?        Sl   09:27   0:00 /usr/libexec/at-spi-bus-launcher --launch-immediately
+quentin     4771 28.5  6.9 5987176 737432 ?      Ssl  09:27  66:36 /usr/bin/gnome-shell
+quentin     4778  0.0  0.0   8564  4352 ?        S    09:27   0:00 /usr/bin/dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-address 11 --address=unix:path=/run/user/1000/at-spi/bus
+quentin     4839  0.0  0.1 583044 20608 ?        Sl   09:27   0:00 /usr/libexec/gnome-shell-calendar-server
+quentin     4845  0.0  0.2 1072176 25600 ?       Ssl  09:27   0:00 /usr/libexec/evolution-source-registry
+root        4847  0.0  0.0 242360  8832 ?        Ssl  09:27   0:00 /usr/libexec/upowerd
+quentin     4853  0.0  0.3 581952 39936 ?        Sl   09:27   0:01 /usr/libexec/goa-daemon
+quentin     4856  0.0  0.0 157104  5888 ?        Ssl  09:27   0:00 /usr/libexec/dconf-service
+quentin     4864  0.0  0.2 1119032 30976 ?       Ssl  09:27   0:01 /usr/libexec/evolution-calendar-factory
+quentin     4865  0.4  0.1 316176 10752 ?        Ssl  09:27   1:05 /usr/libexec/gvfs-udisks2-volume-monitor
+quentin     4876  0.0  0.1 412140 15232 ?        Sl   09:27   0:00 /usr/libexec/goa-identity-service
+quentin     4883  0.0  0.0 236640  6528 ?        Ssl  09:27   0:00 /usr/libexec/gvfs-goa-volume-monitor
+quentin     4893  0.0  0.0 315216  7808 ?        Ssl  09:27   0:00 /usr/libexec/gvfs-afc-volume-monitor
+quentin     4897  0.0  0.2 672272 28544 ?        Ssl  09:27   0:01 /usr/libexec/evolution-addressbook-factory
+quentin     4902  0.0  0.0 237424  7040 ?        Ssl  09:27   0:00 /usr/libexec/gvfs-gphoto2-volume-monitor
+quentin     4914  0.0  0.0 236468  6400 ?        Ssl  09:27   0:00 /usr/libexec/gvfs-mtp-volume-monitor
+root        4923  0.0  0.3 372992 40652 ?        Ssl  09:27   0:12 /usr/libexec/packagekitd
+quentin     4930  0.0  0.0 315004  9088 ?        Sl   09:27   0:03 /usr/libexec/gvfsd-trash --spawner :1.15 /org/gtk/gvfs/exec_spaw/0
+quentin     4943  0.0  0.2 2738716 28052 ?       Sl   09:27   0:00 /usr/bin/gjs /usr/share/gnome-shell/org.gnome.Shell.Notifications
+quentin     4945  0.0  0.0 162688  7424 ?        Sl   09:27   0:00 /usr/libexec/at-spi2-registryd --use-gnome-session
+quentin     4958  0.0  0.0   2892  1536 ?        Ss   09:27   0:00 sh -c /usr/bin/ibus-daemon --panel disable $([ "$XDG_SESSION_TYPE" = "x11" ] && echo "--xim")
+quentin     4960  0.0  0.0 310432  6656 ?        Ssl  09:27   0:00 /usr/libexec/gsd-a11y-settings
+quentin     4961  0.0  0.2 451216 25216 ?        Ssl  09:27   0:00 /usr/libexec/gsd-color
+quentin     4962  0.0  0.1 375468 16000 ?        Ssl  09:27   0:00 /usr/libexec/gsd-datetime
+quentin     4965  0.1  0.1 315288 11936 ?        Sl   09:27   0:21 /usr/bin/ibus-daemon --panel disable
+quentin     4966  0.0  0.0 312296  8064 ?        Ssl  09:27   0:10 /usr/libexec/gsd-housekeeping
+quentin     4968  0.0  0.2 340604 21276 ?        Ssl  09:27   0:00 /usr/libexec/gsd-keyboard
+quentin     4969  0.0  0.2 864208 26480 ?        Ssl  09:27   0:00 /usr/libexec/gsd-media-keys
+quentin     4972  0.0  0.2 715576 27408 ?        Ssl  09:27   0:00 /usr/libexec/gsd-power
+quentin     4978  0.0  0.1 249860 10880 ?        Ssl  09:27   0:00 /usr/libexec/gsd-print-notifications
+quentin     4979  0.0  0.0 457860  6656 ?        Ssl  09:27   0:00 /usr/libexec/gsd-rfkill
+quentin     4983  0.0  0.0 236296  6272 ?        Ssl  09:27   0:00 /usr/libexec/gsd-screensaver-proxy
+quentin     4984  0.0  0.1 466068 11136 ?        Ssl  09:27   0:03 /usr/libexec/gsd-sharing
+quentin     4988  0.0  0.6 822728 66044 ?        Sl   09:27   0:00 /usr/libexec/evolution-data-server/evolution-alarm-notify
+quentin     4994  0.0  0.0 459776  8192 ?        Ssl  09:27   0:00 /usr/libexec/gsd-smartcard
+quentin     4996  0.0  0.0 319352  9600 ?        Ssl  09:27   0:00 /usr/libexec/gsd-sound
+quentin     5004  0.0  0.2 414928 21996 ?        Ssl  09:27   0:00 /usr/libexec/gsd-wacom
+quentin     5020  0.0  0.0 232272  7808 ?        Sl   09:27   0:00 /usr/libexec/gsd-disk-utility-notify
+quentin     5044  0.0  0.0 237324  7424 ?        Sl   09:27   0:00 /usr/libexec/ibus-dconf
+quentin     5049  0.0  0.2 347828 28692 ?        Sl   09:27   0:05 /usr/libexec/ibus-extension-gtk3
+quentin     5081  0.0  0.0 237268  7424 ?        Sl   09:27   0:00 /usr/libexec/ibus-portal
+quentin     5089  0.0  0.0  20064  1564 ?        S    09:27   0:00 /usr/bin/VBoxClient --clipboard
+quentin     5090  0.0  0.0 218252  3868 ?        Sl   09:27   0:00 /usr/bin/VBoxClient --clipboard
+quentin     5099  0.0  0.9 847252 105916 ?       Sl   09:27   0:04 /snap/snap-store/1113/usr/bin/snap-store --gapplication-service
+quentin     5125  1.2  1.3 328300 148196 ?       S    09:27   2:57 /usr/bin/Xwayland :0 -rootless -noreset -accessx -core -auth /run/user/1000/.mutter-Xwaylandauth.B900Q2 -listen 4 -listen 5 -displayfd 6 -initfd 7
+quentin     5145  0.0  0.1 342368 14848 ?        Sl   09:27   0:00 /usr/libexec/gsd-printer
+quentin     5170  0.0  0.0  38952  5760 ?        Ss   09:27   0:00 /snap/snapd-desktop-integration/157/usr/bin/snapd-desktop-integration
+quentin     5264  0.0  0.1 429160 20348 ?        Sl   09:27   0:00 /snap/snapd-desktop-integration/157/usr/bin/snapd-desktop-integration
+quentin     5272  0.0  0.0 163620  7296 ?        Sl   09:27   0:07 /usr/libexec/ibus-engine-simple
+quentin     5297  0.0  0.1 689392 14208 ?        Ssl  09:27   0:02 /usr/libexec/xdg-desktop-portal
+quentin     5299  0.0  0.7 531240 79940 ?        Ssl  09:27   0:00 /usr/libexec/gsd-xsettings
+quentin     5304  0.1  1.0 2278208 115664 ?      Ssl  09:27   0:15 /usr/libexec/xdg-desktop-portal-gnome
+quentin     5342  0.0  0.2 2730588 27864 ?       Sl   09:27   0:00 /usr/bin/gjs /usr/share/gnome-shell/org.gnome.ScreenSaver
+quentin     5369  0.0  0.2 194248 24716 ?        Sl   09:27   0:00 /usr/libexec/ibus-x11
+quentin     5375  0.0  0.3 649864 34284 ?        SNsl 09:27   0:09 /usr/libexec/tracker-miner-fs-3
+quentin     5403  0.0  0.0  20064  1560 ?        S    09:27   0:00 /usr/bin/VBoxClient --seamless
+quentin     5407  0.0  0.0 218352  2968 ?        Sl   09:27   0:10 /usr/bin/VBoxClient --seamless
+quentin     5413  0.0  0.0  20064  1564 ?        S    09:27   0:00 /usr/bin/VBoxClient --draganddrop
+quentin     5414  0.1  0.0 218868  3100 ?        Sl   09:27   0:25 /usr/bin/VBoxClient --draganddrop
+quentin     5415  0.0  0.2 343992 24568 ?        Ssl  09:27   0:00 /usr/libexec/xdg-desktop-portal-gtk
+quentin     5426  0.0  0.0  20064  1436 ?        S    09:27   0:00 /usr/bin/VBoxClient --vmsvga-session
+quentin     5427  0.0  0.0 152168  2076 ?        Sl   09:27   0:01 /usr/bin/VBoxClient --vmsvga-session
+quentin     5488  0.0  0.0 162920  6528 ?        Ssl  09:27   0:00 /usr/libexec/gvfsd-metadata
+quentin     6424  3.1  3.7 34308360 396140 ?     SLl  09:28   7:24 /opt/google/chrome/chrome
+quentin     6430  0.0  0.0   8516  1920 ?        S    09:28   0:00 cat
+quentin     6431  0.0  0.0   8516  1920 ?        S    09:28   0:00 cat
+quentin     6433  0.0  0.0 33575884 3456 ?       Sl   09:28   0:00 /opt/google/chrome/chrome_crashpad_handler --monitor-self --monitor-self-annotation=ptype=crashpad-handler --database=/home/quentin/.config/google-chrome/Crash Reports --url=https://clients2.google.com/cr/report --annotation=channel= --annotation=lsb-release=Ubuntu 22.04.4 LTS --annotation=plat=Linux --annotation=prod=Chrome_Linux --annotation=ver=126.0.6478.126 --initial-client-fd=5 --shared-client-connection
+quentin     6435  0.0  0.0 33567672 3200 ?       Sl   09:28   0:00 /opt/google/chrome/chrome_crashpad_handler --no-periodic-tasks --monitor-self-annotation=ptype=crashpad-handler --database=/home/quentin/.config/google-chrome/Crash Reports --url=https://clients2.google.com/cr/report --annotation=channel= --annotation=lsb-release=Ubuntu 22.04.4 LTS --annotation=plat=Linux --annotation=prod=Chrome_Linux --annotation=ver=126.0.6478.126 --initial-client-fd=4 --shared-client-connection
+quentin     6441  0.0  0.5 33924716 57600 ?      S    09:28   0:00 /opt/google/chrome/chrome --type=zygote --no-zygote-sandbox --crashpad-handler-pid=6433 --enable-crash-reporter=, --change-stack-guard-on-fork=enable
+quentin     6442  0.0  0.5 33924704 57856 ?      S    09:28   0:00 /opt/google/chrome/chrome --type=zygote --crashpad-handler-pid=6433 --enable-crash-reporter=, --change-stack-guard-on-fork=enable
+quentin     6444  0.0  0.1 33924724 16332 ?      S    09:28   0:01 /opt/google/chrome/chrome --type=zygote --crashpad-handler-pid=6433 --enable-crash-reporter=, --change-stack-guard-on-fork=enable
+quentin     6470  4.3  2.3 34358084 244288 ?     Sl   09:28  10:08 /opt/google/chrome/chrome --type=gpu-process --crashpad-handler-pid=6433 --enable-crash-reporter=, --change-stack-guard-on-fork=enable --gpu-preferences=WAAAAAAAAAAgAAAEAAAAAAAAAAAAAAAAAABgAAEAAAA4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAGAAAAAAAAAAYAAAAAAAAAAgAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin     6472  0.5  1.2 33943172 130820 ?     Sl   09:28   1:17 /opt/google/chrome/chrome --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbox-type=none --crashpad-handler-pid=6433 --enable-crash-reporter=, --change-stack-guard-on-fork=enable --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin     6482  0.0  0.6 33985120 67628 ?      Sl   09:28   0:04 /opt/google/chrome/chrome --type=utility --utility-sub-type=storage.mojom.StorageService --lang=en-US --service-sandbox-type=utility --crashpad-handler-pid=6433 --enable-crash-reporter=, --change-stack-guard-on-fork=enable --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin     6603  0.0  0.9 1186867152 104304 ?   Sl   09:28   0:00 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --extension-process --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=5 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=86580724 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin     6613  0.0  0.9 1186857864 99200 ?    Sl   09:28   0:00 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --extension-process --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=6 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=86689615 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin     6624  0.0  0.9 1186874256 102764 ?   Sl   09:28   0:00 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --extension-process --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=7 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=86786366 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin     6692  0.5  1.3 1186876484 144280 ?   Sl   09:28   1:18 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=12 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=87788764 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin     6747  0.8  1.8 1186337356 195632 ?   SLsl 09:28   1:52 /snap/code/164/usr/share/code/code --no-sandbox --force-user-env
+quentin     6752  0.0  0.4 33783108 46848 ?      S    09:28   0:00 /snap/code/164/usr/share/code/code --type=zygote --no-zygote-sandbox --no-sandbox
+quentin     6754  0.0  0.4 33783120 47104 ?      S    09:28   0:00 /snap/code/164/usr/share/code/code --type=zygote --no-sandbox
+quentin     6777  2.3  1.6 1186886280 178480 ?   Sl   09:28   5:23 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=20 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=89638814 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin     6791  0.0  0.0 33576156 3328 ?       Sl   09:28   0:00 /snap/code/164/usr/share/code/chrome_crashpad_handler --monitor-self-annotation=ptype=crashpad-handler --no-rate-limit --database=/home/quentin/.config/Code/Crashpad --url=appcenter://code?aid=fba07a4d-84bd-4fc8-a125-9640fc8ce171&uid=0fbd04e6-13cc-464f-88d0-948cb5efc567&iid=0fbd04e6-13cc-464f-88d0-948cb5efc567&sid=0fbd04e6-13cc-464f-88d0-948cb5efc567 --annotation=_companyName=Microsoft --annotation=_productName=VSCode --annotation=_version=1.91.1 --annotation=lsb-release=Ubuntu 22.04.4 LTS --annotation=plat=Linux --annotation=prod=Electron --annotation=ver=29.4.0 --initial-client-fd=46 --shared-client-connection
+quentin     6799  0.0  0.2 436752 30980 ?        Sl   09:28   0:00 update-notifier
+quentin     6869  0.0  0.6 33850208 68112 ?      Sl   09:28   0:03 /snap/code/164/usr/share/code/code --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbox-type=none --no-sandbox --crashpad-handler-pid=6791 --enable-crash-reporter=c74f314a-7367-4141-b447-4eb5c6fde3df,no_channel --user-data-dir=/home/quentin/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=0,i,18347373423621231288,2156268955133696521,262144 --enable-features=kWebSQLAccess --disable-features=CalculateNativeWinOcclusion,SpareRendererForSitePerProcess --variations-seed-version
+quentin     6929  1.1  3.2 1188340972 344072 ?   Sl   09:28   2:46 /snap/code/164/usr/share/code/code --type=renderer --crashpad-handler-pid=6791 --enable-crash-reporter=c74f314a-7367-4141-b447-4eb5c6fde3df,no_channel --user-data-dir=/home/quentin/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --app-path=/snap/code/164/usr/share/code/resources/app --enable-sandbox --enable-blink-features=HighlightAPI --no-sandbox --disable-blink-features=FontMatchingCTMigration, --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=5 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=91882500 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=0,i,18347373423621231288,2156268955133696521,262144 --enable-features=kWebSQLAccess --disable-features=CalculateNativeWinOcclusion,SpareRendererForSitePerProcess --variations-seed-version --vscode-window-config=vscode:06570d42-b306-4533-b270-5118423fed88
+quentin     7025  2.1  1.3 34005312 144320 ?     Sl   09:28   5:03 /snap/code/164/usr/share/code/code --type=gpu-process --disable-gpu-sandbox --no-sandbox --crashpad-handler-pid=6791 --enable-crash-reporter=c74f314a-7367-4141-b447-4eb5c6fde3df,no_channel --user-data-dir=/home/quentin/.config/Code --gpu-preferences=WAAAAAAAAAAgAAAEAAAAAAAAAAAAAAAAAABgAAAAAAA4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAGAAAAAAAAAAYAAAAAAAAAAgAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --use-gl=angle --use-angle=swiftshader-webgl --shared-files --field-trial-handle=0,i,18347373423621231288,2156268955133696521,262144 --enable-features=kWebSQLAccess --disable-features=CalculateNativeWinOcclusion,SpareRendererForSitePerProcess --variations-seed-version
+quentin     7593  0.1  1.1 1186095900 121600 ?   Sl   09:28   0:18 /snap/code/164/usr/share/code/code --type=utility --utility-sub-type=node.mojom.NodeService --lang=en-US --service-sandbox-type=none --no-sandbox --crashpad-handler-pid=6791 --enable-crash-reporter=c74f314a-7367-4141-b447-4eb5c6fde3df,no_channel --user-data-dir=/home/quentin/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=0,i,18347373423621231288,2156268955133696521,262144 --enable-features=kWebSQLAccess --disable-features=CalculateNativeWinOcclusion,SpareRendererForSitePerProcess --variations-seed-version
+quentin     7683  0.0  1.6 1186876688 176216 ?   Sl   09:28   0:03 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=27 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=95416228 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin     7722  0.6  1.2 1186098104 131052 ?   Sl   09:28   1:27 /snap/code/164/usr/share/code/code --type=utility --utility-sub-type=node.mojom.NodeService --lang=en-US --service-sandbox-type=none --no-sandbox --dns-result-order=ipv4first --inspect-port=0 --crashpad-handler-pid=6791 --enable-crash-reporter=c74f314a-7367-4141-b447-4eb5c6fde3df,no_channel --user-data-dir=/home/quentin/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=0,i,18347373423621231288,2156268955133696521,262144 --enable-features=kWebSQLAccess --disable-features=CalculateNativeWinOcclusion,SpareRendererForSitePerProcess --variations-seed-version
+quentin     7732  0.0  0.8 1186096344 89208 ?    Sl   09:28   0:02 /snap/code/164/usr/share/code/code --type=utility --utility-sub-type=node.mojom.NodeService --lang=en-US --service-sandbox-type=none --no-sandbox --crashpad-handler-pid=6791 --enable-crash-reporter=c74f314a-7367-4141-b447-4eb5c6fde3df,no_channel --user-data-dir=/home/quentin/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=0,i,18347373423621231288,2156268955133696521,262144 --enable-features=kWebSQLAccess --disable-features=CalculateNativeWinOcclusion,SpareRendererForSitePerProcess --variations-seed-version
+quentin     7770  0.0  0.7 1186028720 81324 ?    Ssl  09:28   0:05 /snap/code/164/usr/share/code/code /home/quentin/.vscode/extensions/ms-vscode-remote.remote-ssh-0.112.0/out/localServer.js {"serverId":1,"ipcHandlePath":"/run/user/1000/vscode-ssh-askpass-dac98a70286902129c34dbd45a6eeebbc68bf337.sock","sshCommand":"ssh","sshArgs":["-v","-T","-D","42729","-o","ConnectTimeout=15","dev"],"serverDataFolderName":".vscode-server","dataFilePath":"/home/quentin/.config/Code/User/globalStorage/ms-vscode-remote.remote-ssh/vscode-ssh-host-d55997bc-f1e16e1e6214d7c44d078b1f0607b2388f29d729-0.112.0-es/data.json"}
+quentin     7787  0.0  0.0  12504  8704 ?        S    09:28   0:02 ssh -v -T -D 42729 -o ConnectTimeout=15 dev
+root        7792  0.0  0.0  16888 10496 ?        Ss   09:28   0:00 sshd: app [priv]
+quentin     7797  0.0  0.0   8088  5632 ?        S    09:28   0:00 /usr/bin/ssh-agent -D -a /run/user/1000/keyring/.ssh
+quentin     7802  0.0  1.6 1186876596 170952 ?   Sl   09:28   0:03 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=26 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=98591261 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin     7818  0.0  0.0  17604  8192 ?        S    09:28   0:02 sshd: app@notty
+quentin     7820  0.0  0.0   7764  3712 ?        Ss   09:28   0:00 -bash
+quentin     7823  0.0  0.0   8160  3584 ?        S    09:28   0:00 bash
+quentin     7843  0.0  0.1  41344 17020 ?        Sl   09:28   0:07 /home/app/.vscode-server/code-f1e16e1e6214d7c44d078b1f0607b2388f29d729 command-shell --cli-data-dir /home/app/.vscode-server/cli --parent-process-id 34 --on-port --on-host=127.0.0.1
+quentin     7902  0.0  0.0   2892  1664 ?        S    09:28   0:00 sh /home/app/.vscode-server/cli/servers/Stable-f1e16e1e6214d7c44d078b1f0607b2388f29d729/server/bin/code-server --connection-token=remotessh --accept-server-license-terms --start-server --enable-remote-auto-shutdown --socket-path=/tmp/code-3b734a32-2bed-418b-b297-7772c01ca348
+quentin     7906  0.1  0.8 1322584 92552 ?       Sl   09:28   0:17 /home/app/.vscode-server/cli/servers/Stable-f1e16e1e6214d7c44d078b1f0607b2388f29d729/server/node /home/app/.vscode-server/cli/servers/Stable-f1e16e1e6214d7c44d078b1f0607b2388f29d729/server/out/server-main.js --connection-token=remotessh --accept-server-license-terms --start-server --enable-remote-auto-shutdown --socket-path=/tmp/code-3b734a32-2bed-418b-b297-7772c01ca348
+quentin     7973  0.0  0.5 1241332 62112 ?       Sl   09:28   0:06 /home/app/.vscode-server/cli/servers/Stable-f1e16e1e6214d7c44d078b1f0607b2388f29d729/server/node /home/app/.vscode-server/cli/servers/Stable-f1e16e1e6214d7c44d078b1f0607b2388f29d729/server/out/bootstrap-fork --type=fileWatcher
+quentin     8398  0.2  2.0 11921712 212900 ?     Sl   09:28   0:37 /home/app/.vscode-server/cli/servers/Stable-f1e16e1e6214d7c44d078b1f0607b2388f29d729/server/node --dns-result-order=ipv4first /home/app/.vscode-server/cli/servers/Stable-f1e16e1e6214d7c44d078b1f0607b2388f29d729/server/out/bootstrap-fork --type=extensionHost --transformURIs --useHostProxy=false
+quentin     8409  0.1  0.5 1132680 58536 ?       Sl   09:28   0:20 /home/app/.vscode-server/cli/servers/Stable-f1e16e1e6214d7c44d078b1f0607b2388f29d729/server/node /home/app/.vscode-server/cli/servers/Stable-f1e16e1e6214d7c44d078b1f0607b2388f29d729/server/out/bootstrap-fork --type=ptyHost --logsPath /home/app/.vscode-server/data/logs/20240717T072849
+quentin     8486  0.0  0.0   2892  1664 ?        S    09:28   0:00 /bin/sh
+quentin     8927  0.0  0.0  12640  9088 pts/0    Ss+  09:28   0:00 /usr/bin/bash --init-file /home/app/.vscode-server/cli/servers/Stable-f1e16e1e6214d7c44d078b1f0607b2388f29d729/server/out/vs/workbench/contrib/terminal/browser/media/shellIntegration-bash.sh
+quentin     9340  0.0  0.8 1025596 84840 ?       Sl   09:28   0:01 /home/app/.vscode-server/cli/servers/Stable-f1e16e1e6214d7c44d078b1f0607b2388f29d729/server/node /home/app/.vscode-server/extensions/ms-python.vscode-pylance-2024.7.1/dist/server.bundle.js --cancellationReceive=file:e5a2074b141497013043ace36ad39eb909cdceeacd --node-ipc --clientProcessId=544
+quentin    10391  0.1  0.9 1186107376 100412 ?   Sl   09:29   0:17 /snap/code/164/usr/share/code/code --type=utility --utility-sub-type=node.mojom.NodeService --lang=en-US --service-sandbox-type=none --no-sandbox --crashpad-handler-pid=6791 --enable-crash-reporter=c74f314a-7367-4141-b447-4eb5c6fde3df,no_channel --user-data-dir=/home/quentin/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=0,i,18347373423621231288,2156268955133696521,262144 --enable-features=kWebSQLAccess --disable-features=CalculateNativeWinOcclusion,SpareRendererForSitePerProcess --variations-seed-version
+quentin    11234  0.0  1.6 1186885312 177676 ?   Sl   09:31   0:05 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=25 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=284776372 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin    11241  0.1  1.9 1188813952 205640 ?   Sl   09:31   0:27 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=16 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=284787930 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin    11273  0.0  1.7 1186885260 183808 ?   Sl   09:31   0:06 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=24 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=287965006 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin    11305  0.0  1.5 1186909596 164476 ?   Sl   09:31   0:08 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=23 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=290953628 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin    11315  0.0  1.5 1186884540 168724 ?   Sl   09:32   0:04 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=22 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=292015384 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin    11337  0.1  2.6 1192609684 276744 ?   Sl   09:32   0:27 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=21 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=294005293 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin    11357  0.0  1.7 1186884644 189248 ?   Sl   09:32   0:05 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=17 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=295054616 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin    35167  0.0  0.0 388736  8960 ?        Sl   09:52   0:00 /usr/libexec/gvfsd-network --spawner :1.15 /org/gtk/gvfs/exec_spaw/1
+quentin    35185  0.0  0.0 316832  8704 ?        Sl   09:52   0:00 /usr/libexec/gvfsd-dnssd --spawner :1.15 /org/gtk/gvfs/exec_spaw/3
+quentin    55376  0.0  0.7 34203024 80240 ?      Sl   10:20   0:02 /opt/google/chrome/chrome --type=utility --utility-sub-type=audio.mojom.AudioService --lang=en-US --service-sandbox-type=none --crashpad-handler-pid=6433 --enable-crash-reporter=, --change-stack-guard-on-fork=enable --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin    62858  0.8  0.5 584008 60968 ?        Ssl  10:33   1:29 /usr/libexec/gnome-terminal-server
+quentin    62880  0.0  0.0  15372  9344 pts/0    Ss+  10:33   0:00 bash
+quentin    65967  0.0  0.0  15240  9216 pts/1    Ss   10:41   0:00 bash
+root       69595  0.0  0.0      0     0 ?        I    10:46   0:01 [kworker/1:1-events]
+quentin   114742  0.0  0.5 996392 55608 ?        Sl   11:07   0:01 /home/app/.vscode-server/cli/servers/Stable-f1e16e1e6214d7c44d078b1f0607b2388f29d729/server/node /home/app/.vscode-server/cli/servers/Stable-f1e16e1e6214d7c44d078b1f0607b2388f29d729/server/extensions/markdown-language-features/server/dist/node/workerMain --node-ipc --clientProcessId=544
+quentin   114956  0.0  0.0  12640  9216 pts/1    Ss+  11:08   0:00 /usr/bin/bash --init-file /home/app/.vscode-server/cli/servers/Stable-f1e16e1e6214d7c44d078b1f0607b2388f29d729/server/out/vs/workbench/contrib/terminal/browser/media/shellIntegration-bash.sh
+quentin   117597  3.1  3.8 1188339744 405936 ?   Sl   11:11   4:01 /snap/code/164/usr/share/code/code --type=renderer --crashpad-handler-pid=6791 --enable-crash-reporter=c74f314a-7367-4141-b447-4eb5c6fde3df,no_channel --user-data-dir=/home/quentin/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --app-path=/snap/code/164/usr/share/code/resources/app --enable-sandbox --enable-blink-features=HighlightAPI --no-sandbox --disable-gpu-compositing --disable-blink-features=FontMatchingCTMigration, --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=18 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=6283768332 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=0,i,18347373423621231288,2156268955133696521,262144 --enable-features=kWebSQLAccess --disable-features=CalculateNativeWinOcclusion,SpareRendererForSitePerProcess --variations-seed-version --vscode-window-config=vscode:ab04c163-dada-4387-bf27-09d200652f82
+quentin   117626  0.5  1.4 1186097812 150624 ?   Sl   11:11   0:40 /snap/code/164/usr/share/code/code --type=utility --utility-sub-type=node.mojom.NodeService --lang=en-US --service-sandbox-type=none --no-sandbox --dns-result-order=ipv4first --inspect-port=0 --crashpad-handler-pid=6791 --enable-crash-reporter=c74f314a-7367-4141-b447-4eb5c6fde3df,no_channel --user-data-dir=/home/quentin/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=0,i,18347373423621231288,2156268955133696521,262144 --enable-features=kWebSQLAccess --disable-features=CalculateNativeWinOcclusion,SpareRendererForSitePerProcess --variations-seed-version
+quentin   117637  0.0  0.8 1186112736 92900 ?    Sl   11:11   0:06 /snap/code/164/usr/share/code/code --type=utility --utility-sub-type=node.mojom.NodeService --lang=en-US --service-sandbox-type=none --no-sandbox --crashpad-handler-pid=6791 --enable-crash-reporter=c74f314a-7367-4141-b447-4eb5c6fde3df,no_channel --user-data-dir=/home/quentin/.config/Code --standard-schemes=vscode-webview,vscode-file --secure-schemes=vscode-webview,vscode-file --cors-schemes=vscode-webview,vscode-file --fetch-schemes=vscode-webview,vscode-file --service-worker-schemes=vscode-webview --code-cache-schemes=vscode-webview,vscode-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=0,i,18347373423621231288,2156268955133696521,262144 --enable-features=kWebSQLAccess --disable-features=CalculateNativeWinOcclusion,SpareRendererForSitePerProcess --variations-seed-version
+quentin   117670  0.0  1.1 1186028720 117704 ?   Sl   11:11   0:03 /snap/code/164/usr/share/code/code --max-old-space-size=3072 /snap/code/164/usr/share/code/resources/app/extensions/node_modules/typescript/lib/tsserver.js --serverMode partialSemantic --useInferredProjectPerProjectRoot --disableAutomaticTypingAcquisition --cancellationPipeName /tmp/vscode-typescript1000/54cee58469e021fdb515/tscancellation-742b27e697f775b4cc28.tmp* --locale en --noGetErrOnBackgroundUpdate --canUseWatchEvents --validateDefaultNpmLocation --useNodeIpc
+quentin   117671  0.1  1.5 1186028720 165096 ?   Sl   11:11   0:12 /snap/code/164/usr/share/code/code --max-old-space-size=3072 /snap/code/164/usr/share/code/resources/app/extensions/node_modules/typescript/lib/tsserver.js --useInferredProjectPerProjectRoot --enableTelemetry --cancellationPipeName /tmp/vscode-typescript1000/54cee58469e021fdb515/tscancellation-b30778b9a5c856feba2a.tmp* --locale en --noGetErrOnBackgroundUpdate --canUseWatchEvents --validateDefaultNpmLocation --useNodeIpc
+quentin   117688  0.0  0.8 1186028704 94948 ?    Sl   11:11   0:01 /snap/code/164/usr/share/code/code /snap/code/164/usr/share/code/resources/app/extensions/node_modules/typescript/lib/typingsInstaller.js --globalTypingsCacheLocation /home/quentin/.cache/typescript/5.5 --enableTelemetry --typesMapLocation /snap/code/164/usr/share/code/resources/app/extensions/node_modules/typescript/lib/typesMap.json --validateDefaultNpmLocation
+root      134069  0.0  0.0      0     0 ?        I    11:25   0:00 [kworker/0:3-rcu_gp]
+root      140494  0.0  0.0      0     0 ?        I    11:31   0:00 [kworker/4:3-events]
+root      140824  0.0  0.0      0     0 ?        I    11:31   0:00 [kworker/0:0-events]
+root      141256  0.0  0.0      0     0 ?        I    11:31   0:00 [kworker/1:4-events]
+root      144568  0.0  0.0      0     0 ?        I    11:35   0:00 [kworker/3:1-events]
+root      144849  0.0  0.0      0     0 ?        I    11:35   0:00 [kworker/2:3-events]
+root      153850  0.0  0.0      0     0 ?        I    11:36   0:01 [kworker/5:0-events]
+root      155689  0.0  0.1 1238460 13420 ?       Sl   11:37   0:00 /usr/bin/containerd-shim-runc-v2 -namespace moby -id d58b4918c09fb5632818dd721b6c5ddba9e6e1f5c8638d32ddc9b37c4351c542 -address /run/containerd/containerd.sock
+vboxadd   155709  0.1  1.0 1348104 111100 ?      Ssl  11:37   0:08 mariadbd
+root      155747  0.0  0.0 1819856 3712 ?        Sl   11:37   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 9093 -container-ip 172.18.0.3 -container-port 80
+root      155752  0.0  0.0 1819856 3712 ?        Sl   11:37   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 9093 -container-ip 172.18.0.3 -container-port 80
+root      155784  0.0  0.1 1238460 13380 ?       Sl   11:37   0:00 /usr/bin/containerd-shim-runc-v2 -namespace moby -id 84f245bbc5de72385058d35a54c78d6c66a8e63673a327dc8705ce66eff50ab9 -address /run/containerd/containerd.sock
+root      155814  0.0  0.1 1238460 13184 ?       Sl   11:37   0:00 /usr/bin/containerd-shim-runc-v2 -namespace moby -id 7cc980e004da93e1698883baa49a8db5beefa9459f31eacc6a0f29da9e77a919 -address /run/containerd/containerd.sock
+root      155826  0.0  0.2  85904 25424 ?        Ss   11:37   0:00 apache2 -DFOREGROUND
+root      155857  0.0  0.2 223448 29784 ?        Ss   11:37   0:00 apache2 -DFOREGROUND
+root      155949  0.0  0.0 1746124 3712 ?        Sl   11:37   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 80 -container-ip 172.18.0.5 -container-port 80
+root      155958  0.0  0.0 1672136 3584 ?        Sl   11:37   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 80 -container-ip 172.18.0.5 -container-port 80
+root      155964  0.0  0.0 1598404 3584 ?        Sl   11:37   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 443 -container-ip 172.18.0.5 -container-port 443
+root      155971  0.0  0.0 1893332 3712 ?        Sl   11:37   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 443 -container-ip 172.18.0.5 -container-port 443
+root      155991  0.0  0.0 1598148 3456 ?        Sl   11:37   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 9092 -container-ip 172.18.0.5 -container-port 9092
+root      156004  0.0  0.0 1819856 3840 ?        Sl   11:37   0:00 /usr/bin/docker-proxy -proto tcp -host-ip :: -host-port 9092 -container-ip 172.18.0.5 -container-port 9092
+www-data  156025  0.0  0.2 161256 25868 ?        S    11:37   0:00 apache2 -DFOREGROUND
+www-data  156027  0.0  0.1  86432 15468 ?        S    11:37   0:00 apache2 -DFOREGROUND
+www-data  156028  0.0  0.2 161160 21364 ?        S    11:37   0:00 apache2 -DFOREGROUND
+www-data  156030  0.0  0.1  86432 15480 ?        S    11:37   0:00 apache2 -DFOREGROUND
+www-data  156031  0.0  0.1  86056 14840 ?        S    11:37   0:00 apache2 -DFOREGROUND
+www-data  156042  0.0  0.0 223480  8556 ?        S    11:37   0:00 apache2 -DFOREGROUND
+www-data  156043  0.0  0.0 223480  8556 ?        S    11:37   0:00 apache2 -DFOREGROUND
+www-data  156044  0.0  0.0 223480  8556 ?        S    11:37   0:00 apache2 -DFOREGROUND
+www-data  156045  0.0  0.0 223480  8556 ?        S    11:37   0:00 apache2 -DFOREGROUND
+www-data  156046  0.0  0.0 223480  8556 ?        S    11:37   0:00 apache2 -DFOREGROUND
+root      156056  0.0  0.1 1238716 13208 ?       Sl   11:37   0:00 /usr/bin/containerd-shim-runc-v2 -namespace moby -id 702d3fcc2add784d376b9db697217d1599f5d6e168d6c423f8be41195e3dceda -address /run/containerd/containerd.sock
+root      156081  0.0  0.3 1268268 40116 ?       Ssl  11:37   0:00 caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
+www-data  156321  0.0  0.1  86432 15604 ?        S    11:37   0:00 apache2 -DFOREGROUND
+www-data  156361  0.0  0.1  86448 15736 ?        S    11:37   0:00 apache2 -DFOREGROUND
+www-data  156522  0.0  0.1  86448 15524 ?        S    11:37   0:00 apache2 -DFOREGROUND
+www-data  156541  0.0  0.1  86228 15096 ?        S    11:37   0:00 apache2 -DFOREGROUND
+quentin   166864  0.0  0.0  12704  9472 pts/2    Ss+  11:55   0:00 /usr/bin/bash --init-file /snap/code/164/usr/share/code/resources/app/out/vs/workbench/contrib/terminal/browser/media/shellIntegration-bash.sh
+quentin   178906  0.0  1.3 1186876516 138112 ?   Sl   12:10   0:02 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=450 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=9802507867 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin   181277  0.0  1.2 1186875556 132800 ?   Sl   12:14   0:00 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=455 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=10062878272 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin   181419  0.0  1.5 1186878032 167064 ?   Sl   12:15   0:02 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=460 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=10072231867 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin   181429  0.0  1.2 1188792964 134224 ?   Sl   12:15   0:00 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=461 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=10072397012 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+root      181789  0.0  0.0      0     0 ?        I    12:15   0:00 [kworker/u12:3-events_unbound]
+root      182043  0.0  0.0      0     0 ?        I    12:15   0:00 [kworker/4:0-cgroup_destroy]
+root      196065  0.0  0.0      0     0 ?        I    12:39   0:00 [kworker/3:0-events]
+quentin   207042  0.0  0.6 3003728 63648 ?       Sl   12:58   0:00 gjs /usr/share/gnome-shell/extensions/ding@rastersoft.com/ding.js -E -P /usr/share/gnome-shell/extensions/ding@rastersoft.com -M 0 -D 0:0:1920:1080:1:27:0:0:0:0
+root      207399  0.0  0.0      0     0 ?        I    12:59   0:00 [kworker/2:0]
+root      208854  0.0  0.0      0     0 ?        I    13:01   0:00 [kworker/5:2-events]
+70        209013  0.0  0.0 160620 10128 ?        Ss   13:01   0:00 postgres: postgres postgres 172.19.0.3(33640) idle
+70        209014  0.0  0.0 160612 10344 ?        Ss   13:01   0:00 postgres: postgres production_maj_2024_06_18_20_2024_07_11_14h58 172.19.0.3(33652) idle
+root      209117  0.0  0.0      0     0 ?        I    13:01   0:00 [kworker/u12:1-flush-8:0]
+quentin   211114  0.1  1.5 1186877612 168480 ?   Sl   13:05   0:01 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=490 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=13081584855 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin   211661  3.0  3.1 1190718900 338792 ?   Sl   13:05   0:26 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=19 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=13128871959 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin   211816  0.0  1.1 1186876476 116816 ?   Sl   13:06   0:00 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=502 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=13139861805 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin   213724  0.1  1.5 1186906424 162320 ?   Sl   13:09   0:01 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=514 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=13327470073 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin   213763  0.0  0.6 1186841468 69692 ?    Sl   13:09   0:00 /opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6433 --enable-crash-reporter=, --origin-trial-disabled-features=ElementCapture --change-stack-guard-on-fork=enable --disable-gpu-compositing --lang=en-US --num-raster-threads=3 --enable-main-frame-before-activation --renderer-client-id=515 --time-ticks-at-unix-epoch=-1721201228935333 --launch-time-ticks=13329312381 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1482995756310811083,2623391663449672398,262144 --variations-seed-version
+quentin   216138  0.0  0.0  15548  9472 pts/3    Ss   13:13   0:00 bash
+root      217049  0.0  0.0      0     0 ?        I    13:14   0:00 [kworker/u12:0-flush-8:0]
+quentin   219356  0.0  0.0  17240  8832 pts/3    S+   13:17   0:00 ssh devqr
+root      220560  0.0  0.0      0     0 ?        I    13:19   0:00 [kworker/u12:2-events_power_efficient]
+quentin   220583  0.0  0.0   6192  1664 ?        S    13:19   0:00 sleep 180
+quentin   221330  0.0  0.0  13124  3712 pts/1    R+   13:20   0:00 ps aux
