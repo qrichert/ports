@@ -27,16 +27,47 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     if let Some(arg) = args.next() {
         return match arg.as_str() {
+            "-h" | "--help" => {
+                help();
+                Ok(())
+            }
+            "-v" | "--version" => {
+                version();
+                Ok(())
+            }
             "-vv" | "--verbose" => verbose(),
             "-vvv" | "--very-verbose" => very_verbose(),
             arg => {
                 eprintln!("Unknown argument: '{arg}'");
+                help();
                 std::process::exit(2)
             }
         };
     }
 
     regular()
+}
+
+fn help() {
+    println!(
+        "\
+{description}
+
+Usage: {bin} [OPTIONS]
+
+Options:
+  -h, --help            Show this message and exit.
+  -v, --version         Show the version and exit.
+  -vv, --verbose        Additional process info.
+  -vvv, --very-verbose  Even more extra info.
+",
+        description = env!("CARGO_PKG_DESCRIPTION"),
+        bin = env!("CARGO_BIN_NAME"),
+    );
+}
+
+fn version() {
+    println!("{} {}", env!("CARGO_BIN_NAME"), env!("CARGO_PKG_VERSION"));
 }
 
 fn regular() -> Result<(), Box<dyn Error>> {
