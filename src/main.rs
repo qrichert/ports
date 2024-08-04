@@ -62,10 +62,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn to_table(headers: &[&str], alignments: &[fmt::Alignment], data: &[Vec<&String>]) -> String {
+fn to_table(
+    headers: &[impl AsRef<str>],
+    alignments: &[fmt::Alignment],
+    data: &[Vec<impl AsRef<str>>],
+) -> String {
     const COLUMN_SEPARATOR: &str = "  ";
 
-    fn column_width(header: &str, column_values: &[&String]) -> usize {
+    fn column_width(header: &str, column_values: &[&str]) -> usize {
         std::cmp::max(
             header.chars().count(),
             column_values
@@ -76,28 +80,36 @@ fn to_table(headers: &[&str], alignments: &[fmt::Alignment], data: &[Vec<&String
         )
     }
 
-    if data.is_empty() {
-        return headers.join("  ");
-    }
-    assert_eq!(headers.len(), alignments.len());
-    assert_eq!(headers.len(), data[0].len());
+    let headers: Vec<&str> = headers.iter().map(AsRef::as_ref).collect();
+    let data: Vec<Vec<&str>> = data
+        .iter()
+        .map(|row| row.iter().map(AsRef::as_ref).collect())
+        .collect();
 
-    // Normalize to strings. It's better to normalize the header to
-    // Strings instead of the data to references. There are probably
-    // many more rows than there are columns.
-    let headers: Vec<String> = headers.iter().map(|x| String::from(*x)).collect();
+    if data.is_empty() {
+        return format!("{}\n", headers.join("  "));
+    }
+    assert_eq!(
+        headers.len(),
+        alignments.len(),
+        "number of headers must match alignments"
+    );
+    assert!(
+        data.iter().all(|row| row.len() == headers.len()),
+        "number of headers must match columns in data"
+    );
 
     // Determine the width of each column.
     let mut cols_width = vec![0; headers.len()];
     for i in 0..headers.len() {
-        let values: Vec<&String> = data.iter().map(|x| x[i]).collect();
-        let width = column_width(&headers[i], &values);
+        let values: Vec<&str> = data.iter().map(|x| x[i]).collect();
+        let width = column_width(headers[i], &values);
         cols_width[i] = width;
     }
 
     let mut table = String::new();
 
-    let mut render_row = |row: &Vec<&String>| {
+    let mut render_row = |row: &Vec<&str>| {
         for i in 0..headers.len() {
             let cell = row[i];
             let width = cols_width[i];
@@ -120,10 +132,147 @@ fn to_table(headers: &[&str], alignments: &[fmt::Alignment], data: &[Vec<&String
         }
     };
 
-    render_row(&headers.iter().collect());
+    render_row(&headers);
     for row in data {
-        render_row(row);
+        render_row(&row);
     }
 
     table
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn to_table_regular() {
+        let table = to_table(
+            &["SHORT", "WITH SPACE", "LAST COLUMN"],
+            &[
+                fmt::Alignment::Left,
+                fmt::Alignment::Left,
+                fmt::Alignment::Left,
+            ],
+            &[
+                vec![
+                    "Value larger than header",
+                    "Column name has space",
+                    "No trailing whitespace",
+                ],
+                vec!["---", "---", "---"],
+            ],
+        );
+
+        println!("{table}");
+        assert_eq!(
+            table,
+            "\
+SHORT                     WITH SPACE             LAST COLUMN
+Value larger than header  Column name has space  No trailing whitespace
+---                       ---                    ---
+"
+        );
+    }
+
+    #[test]
+    fn to_table_headers_alignment() {
+        let table = to_table(
+            &["ALIGN-LEFT", "ALIGN-CENTER", "ALIGN-RIGHT"],
+            &[
+                fmt::Alignment::Left,
+                fmt::Alignment::Center,
+                fmt::Alignment::Right,
+            ],
+            &[
+                vec![
+                    "Header is aligned Left",
+                    "Header is aligned Center",
+                    "Header is aligned Right",
+                ],
+                vec!["---", "---", "---"],
+            ],
+        );
+
+        println!("{table}");
+        assert_eq!(
+            table,
+            "\
+ALIGN-LEFT                    ALIGN-CENTER                    ALIGN-RIGHT
+Header is aligned Left  Header is aligned Center  Header is aligned Right
+---                               ---                                 ---
+"
+        );
+    }
+
+    #[test]
+    fn to_table_values_alignment() {
+        let table = to_table(
+            &["ALIGN-LEFT", "ALIGN-CENTER", "ALIGN-RIGHT"],
+            &[
+                fmt::Alignment::Left,
+                fmt::Alignment::Center,
+                fmt::Alignment::Right,
+            ],
+            &[vec!["Left", "Center", "Right"], vec!["---", "---", "---"]],
+        );
+
+        println!("{table}");
+        assert_eq!(
+            table,
+            "\
+ALIGN-LEFT  ALIGN-CENTER  ALIGN-RIGHT
+Left           Center           Right
+---             ---               ---
+"
+        );
+    }
+
+    #[test]
+    fn to_table_empty() {
+        let table = to_table(
+            &["SHORT", "WITH SPACE", "LAST COLUMN"],
+            &[
+                fmt::Alignment::Left,
+                fmt::Alignment::Left,
+                fmt::Alignment::Left,
+            ],
+            &[] as &[Vec<&str>; 0],
+        );
+
+        println!("{table}");
+        assert_eq!(
+            table,
+            "\
+SHORT  WITH SPACE  LAST COLUMN
+"
+        );
+    }
+
+    #[test]
+    #[should_panic(expected = "number of headers must match alignments")]
+    fn to_table_nb_headers_neq_nb_alignments() {
+        to_table(
+            &["COLUMN 1", "COLUMN 2"],
+            &[
+                fmt::Alignment::Left,
+                fmt::Alignment::Left,
+                fmt::Alignment::Left,
+            ],
+            &[vec!["---", "---"]],
+        );
+    }
+
+    #[test]
+    #[should_panic(expected = "number of headers must match columns in data")]
+    fn to_table_nb_headers_neq_nb_columns_in_data() {
+        to_table(
+            &["COLUMN 1", "COLUMN 2"],
+            &[fmt::Alignment::Left, fmt::Alignment::Left],
+            &[
+                vec!["---", "---"],
+                vec!["---", "---", "---"],
+                vec!["---", "---"],
+            ],
+        );
+    }
 }
