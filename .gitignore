@@ -4,5 +4,7 @@
 /_wip/
 /target/
 
+/perf.data*
+
 .DS_Store
 *.swp

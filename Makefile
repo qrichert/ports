@@ -83,6 +83,12 @@ coverage-pct: ## Ensure code coverage of 100%
 		[ $$(echo "$$percent_covered == 100" | bc -l) -eq 0 ] && exit 1; \
 		exit 0
 
+.PHONY: p
+p: profiling
+.PHONY: profiling
+profiling: ## Execution profiling report
+	@CARGO_PROFILE_RELEASE_DEBUG=true cargo flamegraph --root --deterministic --output target/flamegraph.svg -- --very-verbose
+
 .PHONY: install
 install: ## Install ports
 	install -d $(PREFIX)/bin/
