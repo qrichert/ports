@@ -50,7 +50,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 }
 
 fn help() {
-    println!(
+    print!(
         "\
 {description}
 
