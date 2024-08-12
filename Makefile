@@ -87,7 +87,9 @@ coverage-pct: ## Ensure code coverage of 100%
 p: profiling
 .PHONY: profiling
 profiling: ## Execution profiling report
+	@mkdir -p target/
 	@CARGO_PROFILE_RELEASE_DEBUG=true cargo flamegraph --root --deterministic --output target/flamegraph.svg -- --very-verbose
+	@mv perf.data target/
 
 .PHONY: install
 install: ## Install ports
