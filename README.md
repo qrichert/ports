@@ -25,13 +25,13 @@ Transmiss  94671  Quentin  IPv6  TCP           *:51413
 
 ```console
 $ ports -vv
-COMMAND      PID  USER     TYPE  NODE        HOST:PORT  %CPU  %MEM  COMMAND
-rapportd     449  Quentin  IPv4  TCP           *:61165   0.0   0.1  /usr/libexec/rapportd
-rapportd     449  Quentin  IPv6  TCP           *:61165   0.0   0.1  /usr/libexec/rapportd
-Python     22396  Quentin  IPv6  TCP            *:8000   0.0   0.2  /usr/local/Cellar/python@3.12/3.12.3/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python -m http.server
-rustrover  30928  Quentin  IPv6  TCP   127.0.0.1:63342   7.2  34.5  /Applications/RustRover.app/Contents/MacOS/rustrover
-Transmiss  94671  Quentin  IPv4  TCP           *:51413   0.0   0.1  /Applications/Transmission.app/Contents/MacOS/Transmission
-Transmiss  94671  Quentin  IPv6  TCP           *:51413   0.0   0.1  /Applications/Transmission.app/Contents/MacOS/Transmission
+COMMAND      PID  USER     TYPE  NODE        HOST:PORT  COMMAND
+rapportd     449  Quentin  IPv4  TCP           *:61165  /usr/libexec/rapportd
+rapportd     449  Quentin  IPv6  TCP           *:61165  /usr/libexec/rapportd
+Python     22396  Quentin  IPv6  TCP            *:8000  /usr/local/Cellar/python@3.12/3.12.3/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python -m http.server
+rustrover  30928  Quentin  IPv6  TCP   127.0.0.1:63342  /Applications/RustRover.app/Contents/MacOS/rustrover
+Transmiss  94671  Quentin  IPv4  TCP           *:51413  /Applications/Transmission.app/Contents/MacOS/Transmission
+Transmiss  94671  Quentin  IPv6  TCP           *:51413  /Applications/Transmission.app/Contents/MacOS/Transmission
 ```
 
 ```console
