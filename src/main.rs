@@ -136,12 +136,6 @@ fn verbose() -> Result<(), Box<dyn Error>> {
                 &port.type_,
                 &port.node,
                 &port.name,
-                // port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.user),
-                // port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.pid),
-                port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.pc_cpu),
-                port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.pc_mem),
-                // port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.started),
-                // port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.time),
                 port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.command),
             ]
         })
@@ -157,12 +151,6 @@ fn verbose() -> Result<(), Box<dyn Error>> {
                 "TYPE",
                 "NODE",
                 "HOST:PORT",
-                // "USER",
-                // "PID",
-                "%CPU",
-                "%MEM",
-                // "START",
-                // "TIME",
                 "COMMAND"
             ])
             .alignments(&[
@@ -172,12 +160,6 @@ fn verbose() -> Result<(), Box<dyn Error>> {
                 fmt::Alignment::Left,
                 fmt::Alignment::Left,
                 fmt::Alignment::Right,
-                // fmt::Alignment::Left,
-                // fmt::Alignment::Right,
-                fmt::Alignment::Right,
-                fmt::Alignment::Right,
-                // fmt::Alignment::Right,
-                // fmt::Alignment::Right,
                 fmt::Alignment::Left,
             ])
             .data(&listening_ports)
@@ -212,8 +194,6 @@ fn very_verbose() -> Result<(), Box<dyn Error>> {
                 &port.type_,
                 &port.node,
                 &port.name,
-                // port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.user),
-                // port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.pid),
                 port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.pc_cpu),
                 port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.pc_mem),
                 port.pinfo.as_ref().map_or_else(|| &empty, |p| &p.start),
@@ -233,8 +213,6 @@ fn very_verbose() -> Result<(), Box<dyn Error>> {
                 "TYPE",
                 "NODE",
                 "HOST:PORT",
-                // "USER",
-                // "PID",
                 "%CPU",
                 "%MEM",
                 "START",
@@ -248,8 +226,6 @@ fn very_verbose() -> Result<(), Box<dyn Error>> {
                 fmt::Alignment::Left,
                 fmt::Alignment::Left,
                 fmt::Alignment::Right,
-                // fmt::Alignment::Left,
-                // fmt::Alignment::Right,
                 fmt::Alignment::Right,
                 fmt::Alignment::Right,
                 fmt::Alignment::Right,
