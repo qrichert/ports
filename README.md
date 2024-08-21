@@ -10,7 +10,7 @@ It's sometimes hard to keep track of which process uses which port, or
 what is running in the background.
 
 ```console
-$ ports
+$ ports 8000 50000-65535
 COMMAND      PID  USER     TYPE  NODE        HOST:PORT
 rapportd     449  Quentin  IPv4  TCP           *:61165
 rapportd     449  Quentin  IPv6  TCP           *:61165
@@ -24,7 +24,7 @@ Transmiss  94671  Quentin  IPv6  TCP           *:51413
 <p>
 
 ```console
-$ ports -vv
+$ ports -vv 8000 50000-65535
 COMMAND      PID  USER     TYPE  NODE        HOST:PORT  COMMAND
 rapportd     449  Quentin  IPv4  TCP           *:61165  /usr/libexec/rapportd
 rapportd     449  Quentin  IPv6  TCP           *:61165  /usr/libexec/rapportd
@@ -35,7 +35,7 @@ Transmiss  94671  Quentin  IPv6  TCP           *:51413  /Applications/Transmissi
 ```
 
 ```console
-$ ports -vvv
+$ ports -vvv 8000 50000-65535
 COMMAND      PID  USER     TYPE  NODE        HOST:PORT  %CPU  %MEM    START       TIME  COMMAND
 rapportd     449  Quentin  IPv4  TCP           *:61165   0.0   0.1  12Jul24    3:05.13  /usr/libexec/rapportd
 rapportd     449  Quentin  IPv6  TCP           *:61165   0.0   0.1  12Jul24    3:05.13  /usr/libexec/rapportd

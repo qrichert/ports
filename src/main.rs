@@ -76,6 +76,34 @@ impl Config {
                     // 0-65535
                     config.filters.push(String::from(arg));
                 }
+                // TODO[refactor]: Once 'if let guard' feature drops.
+                //   arg if let Some((Some(start), Some(end))) =
+                //       arg.split_once('-').and_then(|range| {
+                //           Some((range.0.parse::<u16>().ok(), range.1.parse::<u16>().ok()))
+                //       }) =>
+                arg if arg.split_once('-').is_some_and(|range| {
+                    range.0.parse::<u16>().is_ok() && range.1.parse::<u16>().is_ok()
+                }) =>
+                {
+                    // TODO: Unnecessary once previous TODO gets resolved.
+                    let range = arg
+                        .split_once('-')
+                        .map(|x| (x.0.parse::<u16>().unwrap(), x.1.parse::<u16>().unwrap()))
+                        .unwrap();
+
+                    let range_start = std::cmp::min(range.0, range.1);
+                    let range_end = std::cmp::max(range.0, range.1);
+
+                    // The bigger the range, the more we allocate...
+                    // But it doesn't look like a bottleneck on a human
+                    // time scale. If it ever gets to be a problem,
+                    // we'll need to handle ranges differently.
+                    let ports: Vec<String> = (range_start..=range_end)
+                        .map(|port| port.to_string())
+                        .collect();
+
+                    config.filters.extend(ports);
+                }
                 arg => {
                     return Err(format!("Unknown argument: '{arg}'"));
                 }
@@ -494,6 +522,117 @@ mod tests {
         let error = Config::new(args).unwrap_err();
 
         assert!(error.contains("'123nan'"));
+    }
+
+    #[test]
+    fn config_range_filters_regular() {
+        let args = vec![String::new(), String::from("1000-1005")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(
+            config.filters,
+            &[
+                String::from("1000"),
+                String::from("1001"),
+                String::from("1002"),
+                String::from("1003"),
+                String::from("1004"),
+                String::from("1005"),
+            ]
+        );
+    }
+
+    #[test]
+    fn config_range_filters_end_first() {
+        let args = vec![String::new(), String::from("1005-1000")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(
+            config.filters,
+            &[
+                String::from("1000"),
+                String::from("1001"),
+                String::from("1002"),
+                String::from("1003"),
+                String::from("1004"),
+                String::from("1005"),
+            ]
+        );
+    }
+
+    #[test]
+    fn config_range_filters_multiple_ranges() {
+        let args = vec![
+            String::new(),
+            String::from("1000-1005"),
+            String::from("40000-40003"),
+        ]
+        .into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(
+            config.filters,
+            &[
+                String::from("1000"),
+                String::from("1001"),
+                String::from("1002"),
+                String::from("1003"),
+                String::from("1004"),
+                String::from("1005"),
+                String::from("40000"),
+                String::from("40001"),
+                String::from("40002"),
+                String::from("40003"),
+            ]
+        );
+    }
+
+    #[test]
+    fn config_range_filters_with_simple_filter() {
+        let args = vec![
+            String::new(),
+            String::from("8000"),
+            String::from("1005-1000"),
+        ]
+        .into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(
+            config.filters,
+            &[
+                String::from("8000"),
+                String::from("1000"),
+                String::from("1001"),
+                String::from("1002"),
+                String::from("1003"),
+                String::from("1004"),
+                String::from("1005"),
+            ]
+        );
+    }
+
+    #[test]
+    fn config_range_filters_range_equals() {
+        let args = vec![String::new(), String::from("1000-1000")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.filters, &[String::from("1000"),]);
+    }
+
+    #[test]
+    fn config_range_filters_invalid_too_low() {
+        let args = vec![String::new(), String::from("-1-10")].into_iter();
+        let error = Config::new(args).unwrap_err();
+
+        assert!(error.contains("'-1-10'"));
+    }
+
+    #[test]
+    fn config_range_filters_invalid_too_high() {
+        let args = vec![String::new(), String::from("65530-65536")].into_iter();
+        let error = Config::new(args).unwrap_err();
+
+        assert!(error.contains("'65530-65536'"));
     }
 
     #[test]
