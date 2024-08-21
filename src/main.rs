@@ -32,15 +32,23 @@ struct Config {
     help: bool,
     version: bool,
     mode: Mode,
+    filters: Vec<String>,
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        Self {
+            help: false,
+            version: false,
+            mode: Mode::Regular,
+            filters: Vec::new(),
+        }
+    }
 }
 
 impl Config {
     fn new(args: impl Iterator<Item = String>) -> Result<Self, String> {
-        let mut config = Self {
-            help: false,
-            version: false,
-            mode: Mode::Regular,
-        };
+        let mut config = Self::default();
 
         for arg in args.skip(1) {
             match arg.as_str() {
@@ -63,6 +71,10 @@ impl Config {
                         continue; // Only increase verbosity.
                     }
                     config.mode = Mode::VeryVerbose;
+                }
+                arg if arg.parse::<u16>().is_ok() => {
+                    // 0-65535
+                    config.filters.push(String::from(arg));
                 }
                 arg => {
                     return Err(format!("Unknown argument: '{arg}'"));
@@ -100,7 +112,7 @@ fn help() {
         "\
 {description}
 
-Usage: {bin} [OPTIONS]
+Usage: {bin} [OPTIONS] [PORT, ...]
 
 Options:
   -h, --help            Show this message and exit.
@@ -120,10 +132,14 @@ fn version() {
 
 #[cfg(not(tarpaulin_include))]
 fn run(config: &Config) -> Result<(), Box<dyn Error>> {
-    let listening_ports = Lsof::listening_ports()?;
+    let mut listening_ports = Lsof::listening_ports()?;
 
     if listening_ports.is_empty() {
         return Ok(());
+    }
+
+    if !config.filters.is_empty() {
+        filter_ports(&mut listening_ports, &config.filters);
     }
 
     match config.mode {
@@ -131,6 +147,16 @@ fn run(config: &Config) -> Result<(), Box<dyn Error>> {
         Mode::Verbose => verbose(listening_ports),
         Mode::VeryVerbose => very_verbose(listening_ports),
     }
+}
+
+fn filter_ports(listening_ports: &mut Vec<ListeningPort>, allowed: &[String]) {
+    listening_ports.retain(|x| {
+        let mut listening_on = x.name.as_str(); // '*:1337'
+        if let Some((_, port)) = listening_on.rsplit_once(':') {
+            listening_on = port;
+        };
+        allowed.contains(&listening_on.to_string())
+    });
 }
 
 // Yes, bad, I know. But I want the same signature for all modes.
@@ -302,6 +328,7 @@ mod tests {
                 help: false,
                 version: false,
                 mode: Mode::Regular,
+                filters: Vec::new(),
             }
         );
     }
@@ -317,6 +344,7 @@ mod tests {
                 help: false,
                 version: false,
                 mode: Mode::Regular,
+                filters: Vec::new(),
             }
         );
     }
@@ -434,10 +462,110 @@ mod tests {
     }
 
     #[test]
+    fn config_filters() {
+        let args = vec![String::new(), String::from("1337"), String::from("42069")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(
+            config.filters,
+            &[String::from("1337"), String::from("42069")]
+        );
+    }
+
+    #[test]
+    fn config_filters_invalid_too_low() {
+        let args = vec![String::new(), String::from("-1")].into_iter();
+        let error = Config::new(args).unwrap_err();
+
+        assert!(error.contains("'-1'"));
+    }
+
+    #[test]
+    fn config_filters_invalid_too_high() {
+        let args = vec![String::new(), String::from("65536")].into_iter();
+        let error = Config::new(args).unwrap_err();
+
+        assert!(error.contains("'65536'"));
+    }
+
+    #[test]
+    fn config_filters_invalid_not_a_number() {
+        let args = vec![String::new(), String::from("123nan")].into_iter();
+        let error = Config::new(args).unwrap_err();
+
+        assert!(error.contains("'123nan'"));
+    }
+
+    #[test]
     fn config_bad_argument() {
         let args = vec![String::new(), String::from("--abcdef")].into_iter();
         let error = Config::new(args).unwrap_err();
 
         assert!(error.contains("'--abcdef'"));
+    }
+
+    #[test]
+    fn filter_ports_regular() {
+        let mut port_1 = ListeningPort::new();
+        port_1.name = String::from("*:1337");
+        let mut port_2 = ListeningPort::new();
+        port_2.name = String::from("127.0.0.1:1337");
+        let mut port_3 = ListeningPort::new();
+        port_3.name = String::from("[::1]:1337");
+        let mut port_4 = ListeningPort::new();
+        port_4.name = String::from("[::]:42069");
+        let mut port_5 = ListeningPort::new();
+        port_5.name = String::from("42069");
+
+        let mut port_6 = ListeningPort::new();
+        port_6.name = String::new();
+        let mut port_7 = ListeningPort::new();
+        port_7.name = String::from("abc");
+        let mut port_8 = ListeningPort::new();
+        port_8.name = String::from("def:");
+
+        let mut listening_ports = vec![
+            port_1.clone(),
+            port_2.clone(),
+            port_3.clone(),
+            port_4.clone(),
+            port_5.clone(),
+            port_6.clone(),
+            port_7.clone(),
+            port_8.clone(),
+        ];
+
+        filter_ports(
+            &mut listening_ports,
+            &[String::from("1337"), String::from("42069")],
+        );
+
+        assert!(listening_ports.contains(&port_1));
+        assert!(listening_ports.contains(&port_2));
+        assert!(listening_ports.contains(&port_3));
+        assert!(listening_ports.contains(&port_4));
+        assert!(listening_ports.contains(&port_5));
+
+        assert!(!listening_ports.contains(&port_6));
+        assert!(!listening_ports.contains(&port_7));
+        assert!(!listening_ports.contains(&port_8));
+    }
+
+    #[test]
+    fn filter_ports_empty() {
+        let mut port_1 = ListeningPort::new();
+        port_1.name = String::from("*:1337");
+        let mut port_2 = ListeningPort::new();
+        port_2.name = String::from("127.0.0.1:1337");
+        let mut port_3 = ListeningPort::new();
+        port_3.name = String::from("[::1]:1337");
+
+        let mut listening_ports = vec![port_1, port_2, port_3];
+
+        filter_ports(&mut listening_ports, &[]);
+
+        // This is correct. We happen to treat 'no-filters' as
+        // 'keep-everything', but this is not `filter_ports()`' problem.
+        assert!(listening_ports.is_empty());
     }
 }

@@ -51,7 +51,8 @@ pub struct ProcessInfo {
 }
 
 impl ProcessInfo {
-    pub(crate) fn new() -> Self {
+    #[must_use]
+    pub fn new() -> Self {
         Self {
             user: String::new(),
             pid: String::new(),
@@ -62,6 +63,12 @@ impl ProcessInfo {
             command: String::new(),
             _cannot_instantiate: std::marker::PhantomData,
         }
+    }
+}
+
+impl Default for ProcessInfo {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -300,6 +307,11 @@ mod tests {
                 reason: "Unable to locate the ps executable on the system.",
             }
         );
+    }
+
+    #[test]
+    fn processinfo_default() {
+        assert_eq!(ProcessInfo::new(), ProcessInfo::default());
     }
 
     #[test]

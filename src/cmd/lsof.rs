@@ -52,7 +52,8 @@ pub struct ListeningPort {
 }
 
 impl ListeningPort {
-    pub(crate) fn new() -> Self {
+    #[must_use]
+    pub fn new() -> Self {
         Self {
             command: String::new(),
             pid: String::new(),
@@ -68,6 +69,12 @@ impl ListeningPort {
     pub fn enrich_with_process_info(&mut self, process_info: &[ProcessInfo]) {
         let pinfo = process_info.iter().find(|process| process.pid == self.pid);
         self.pinfo = pinfo.cloned();
+    }
+}
+
+impl Default for ListeningPort {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -316,6 +323,11 @@ mod tests {
                 reason: "Unable to locate the lsof executable on the system.",
             }
         );
+    }
+
+    #[test]
+    fn listeningport_default() {
+        assert_eq!(ListeningPort::new(), ListeningPort::default());
     }
 
     #[test]
