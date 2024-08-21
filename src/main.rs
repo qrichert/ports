@@ -14,41 +14,87 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#![cfg(not(tarpaulin_include))]
-
-use ports::cmd::{Lsof, Ps};
+use ports::cmd::{ListeningPort, Lsof, Ps};
 use ports::ui;
 use std::env;
 use std::error::Error;
 use std::fmt;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    let mut args = env::args();
-    args.next();
-
-    if let Some(arg) = args.next() {
-        return match arg.as_str() {
-            "-h" | "--help" => {
-                help();
-                Ok(())
-            }
-            "-v" | "--version" => {
-                version();
-                Ok(())
-            }
-            "-vv" | "--verbose" => verbose(),
-            "-vvv" | "--very-verbose" => very_verbose(),
-            arg => {
-                eprintln!("Unknown argument: '{arg}'");
-                help();
-                std::process::exit(2)
-            }
-        };
-    }
-
-    regular()
+#[derive(Debug, Eq, PartialEq, PartialOrd)]
+enum Mode {
+    Regular,
+    Verbose,
+    VeryVerbose,
 }
 
+#[derive(Debug, Eq, PartialEq)]
+struct Config {
+    help: bool,
+    version: bool,
+    mode: Mode,
+}
+
+impl Config {
+    fn new(args: impl Iterator<Item = String>) -> Result<Self, String> {
+        let mut config = Self {
+            help: false,
+            version: false,
+            mode: Mode::Regular,
+        };
+
+        for arg in args.skip(1) {
+            match arg.as_str() {
+                "-h" | "--help" => {
+                    config.help = true;
+                    break;
+                }
+                "-v" | "--version" => {
+                    config.version = true;
+                    break;
+                }
+                "-vv" | "--verbose" => {
+                    if config.mode >= Mode::Verbose {
+                        continue; // Only increase verbosity.
+                    }
+                    config.mode = Mode::Verbose;
+                }
+                "-vvv" | "--very-verbose" => {
+                    if config.mode >= Mode::VeryVerbose {
+                        continue; // Only increase verbosity.
+                    }
+                    config.mode = Mode::VeryVerbose;
+                }
+                arg => {
+                    return Err(format!("Unknown argument: '{arg}'"));
+                }
+            }
+        }
+
+        Ok(config)
+    }
+}
+
+#[cfg(not(tarpaulin_include))]
+fn main() -> Result<(), Box<dyn Error>> {
+    let config = Config::new(env::args()).unwrap_or_else(|e| {
+        eprintln!("{e}");
+        help();
+        std::process::exit(2);
+    });
+
+    if config.help {
+        help();
+        return Ok(());
+    }
+    if config.version {
+        version();
+        return Ok(());
+    }
+
+    run(&config)
+}
+
+#[cfg(not(tarpaulin_include))]
 fn help() {
     print!(
         "\
@@ -67,17 +113,30 @@ Options:
     );
 }
 
+#[cfg(not(tarpaulin_include))]
 fn version() {
     println!("{} {}", env!("CARGO_BIN_NAME"), env!("CARGO_PKG_VERSION"));
 }
 
-fn regular() -> Result<(), Box<dyn Error>> {
+#[cfg(not(tarpaulin_include))]
+fn run(config: &Config) -> Result<(), Box<dyn Error>> {
     let listening_ports = Lsof::listening_ports()?;
 
     if listening_ports.is_empty() {
         return Ok(());
     }
 
+    match config.mode {
+        Mode::Regular => regular(listening_ports),
+        Mode::Verbose => verbose(listening_ports),
+        Mode::VeryVerbose => very_verbose(listening_ports),
+    }
+}
+
+// Yes, bad, I know. But I want the same signature for all modes.
+#[allow(clippy::needless_pass_by_value, clippy::unnecessary_wraps)]
+#[cfg(not(tarpaulin_include))]
+fn regular(listening_ports: Vec<ListeningPort>) -> Result<(), Box<dyn Error>> {
     let listening_ports: Vec<Vec<&String>> = listening_ports
         .iter()
         .map(|port| {
@@ -110,14 +169,9 @@ fn regular() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn verbose() -> Result<(), Box<dyn Error>> {
-    let mut listening_ports = Lsof::listening_ports()?;
-
-    if listening_ports.is_empty() {
-        return Ok(());
-    }
-
-    // Enable more info from `ps aux`.
+#[cfg(not(tarpaulin_include))]
+fn verbose(mut listening_ports: Vec<ListeningPort>) -> Result<(), Box<dyn Error>> {
+    // Enable more info through `ps aux`.
     let pids: Vec<&String> = listening_ports.iter().map(|port| &port.pid).collect();
     let processes_info = Ps::processes_info(&pids)?;
 
@@ -168,14 +222,9 @@ fn verbose() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn very_verbose() -> Result<(), Box<dyn Error>> {
-    let mut listening_ports = Lsof::listening_ports()?;
-
-    if listening_ports.is_empty() {
-        return Ok(());
-    }
-
-    // Enable more info from `ps aux`.
+#[cfg(not(tarpaulin_include))]
+fn very_verbose(mut listening_ports: Vec<ListeningPort>) -> Result<(), Box<dyn Error>> {
+    // Enable more info through `ps aux`.
     let pids: Vec<&String> = listening_ports.iter().map(|port| &port.pid).collect();
     let processes_info = Ps::processes_info(&pids)?;
 
@@ -236,4 +285,159 @@ fn very_verbose() -> Result<(), Box<dyn Error>> {
     );
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn config_no_args() {
+        let args = vec![String::new()].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(
+            config,
+            Config {
+                help: false,
+                version: false,
+                mode: Mode::Regular,
+            }
+        );
+    }
+
+    #[test]
+    fn config_with_bin_path() {
+        let args = vec![String::from("/usr/local/bin/ports")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(
+            config,
+            Config {
+                help: false,
+                version: false,
+                mode: Mode::Regular,
+            }
+        );
+    }
+
+    #[test]
+    fn config_help_full() {
+        let args = vec![String::new(), String::from("--help")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert!(config.help);
+    }
+
+    #[test]
+    fn config_help_short() {
+        let args = vec![String::new(), String::from("-h")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert!(config.help);
+    }
+
+    #[test]
+    fn config_version_full() {
+        let args = vec![String::new(), String::from("--version")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert!(config.version);
+    }
+
+    #[test]
+    fn config_version_short() {
+        let args = vec![String::new(), String::from("-v")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert!(config.version);
+    }
+
+    #[test]
+    fn config_regular() {
+        let args = vec![String::new()].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.mode, Mode::Regular);
+    }
+
+    #[test]
+    fn config_verbose_full() {
+        let args = vec![String::new(), String::from("--verbose")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.mode, Mode::Verbose);
+    }
+
+    #[test]
+    fn config_verbose_short() {
+        let args = vec![String::new(), String::from("-vv")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.mode, Mode::Verbose);
+    }
+
+    #[test]
+    fn config_verbose_over_verbose_is_no_op() {
+        let args = vec![
+            String::new(),
+            String::from("--verbose"),
+            String::from("--verbose"),
+        ]
+        .into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.mode, Mode::Verbose);
+    }
+
+    #[test]
+    fn config_very_verbose_full() {
+        let args = vec![String::new(), String::from("--very-verbose")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.mode, Mode::VeryVerbose);
+    }
+
+    #[test]
+    fn config_very_verbose_short() {
+        let args = vec![String::new(), String::from("-vvv")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.mode, Mode::VeryVerbose);
+    }
+
+    #[test]
+    fn config_very_verbose_gt_verbose() {
+        let args = vec![
+            String::new(),
+            String::from("--verbose"),
+            String::from("--very-verbose"),
+            String::from("--verbose"),
+        ]
+        .into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.mode, Mode::VeryVerbose);
+    }
+
+    #[test]
+    fn config_very_verbose_over_very_verbose_is_no_op() {
+        let args = vec![
+            String::new(),
+            String::from("--very-verbose"),
+            String::from("--very-verbose"),
+        ]
+        .into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.mode, Mode::VeryVerbose);
+    }
+
+    #[test]
+    fn config_bad_argument() {
+        let args = vec![String::new(), String::from("--abcdef")].into_iter();
+        let error = Config::new(args).unwrap_err();
+
+        assert!(error.contains("'--abcdef'"));
+    }
 }
