@@ -55,7 +55,6 @@ Transmiss  94671  Quentin  IPv6  TCP           *:51413   0.0   0.2   3Aug24   96
 ```console
 $ wget https://github.com/qrichert/ports/releases/download/X.X.X/ports-X.X.X-xxx
 $ sudo install ./ports-* /usr/local/bin/ports
-$ sudo ln -s /usr/local/bin/ports /usr/local/bin/cr
 ```
 
 ### Manual Build
