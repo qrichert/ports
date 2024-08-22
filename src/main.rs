@@ -140,7 +140,11 @@ fn help() {
         "\
 {description}
 
-Usage: {bin} [OPTIONS] [PORT, ...]
+Usage: {bin} [OPTIONS] [PORT[-RANGE] ...]
+
+Filters:
+  Filter on ports by passing port numbers or port ranges.
+  For example `{bin} 8000 8003` or `{bin} 8000-8005`.
 
 Options:
   -h, --help            Show this message and exit.
