@@ -162,12 +162,12 @@ fn version() {
 fn run(config: &Config) -> Result<(), Box<dyn Error>> {
     let mut listening_ports = Lsof::listening_ports()?;
 
-    if listening_ports.is_empty() {
-        return Ok(());
-    }
-
     if !config.filters.is_empty() {
         filter_ports(&mut listening_ports, &config.filters);
+    }
+
+    if listening_ports.is_empty() {
+        return Ok(());
     }
 
     match config.mode {
