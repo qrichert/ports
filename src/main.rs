@@ -15,10 +15,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 use ports::cmd::{ListeningPort, Lsof, Ps};
-use ports::ui;
 use std::env;
 use std::error::Error;
 use std::fmt;
+use verynicetable::Table;
 
 #[derive(Debug, Eq, PartialEq, PartialOrd)]
 enum Mode {
@@ -211,7 +211,7 @@ fn regular(listening_ports: Vec<ListeningPort>) -> Result<(), Box<dyn Error>> {
 
     print!(
         "{}",
-        ui::Table::new()
+        Table::new()
             .headers(&["COMMAND", "PID", "USER", "TYPE", "NODE", "HOST:PORT"])
             .alignments(&[
                 fmt::Alignment::Left,
@@ -255,7 +255,7 @@ fn verbose(mut listening_ports: Vec<ListeningPort>) -> Result<(), Box<dyn Error>
 
     print!(
         "{}",
-        ui::Table::new()
+        Table::new()
             .headers(&[
                 "COMMAND",
                 "PID",
@@ -312,7 +312,7 @@ fn very_verbose(mut listening_ports: Vec<ListeningPort>) -> Result<(), Box<dyn E
 
     print!(
         "{}",
-        ui::Table::new()
+        Table::new()
             .headers(&[
                 "COMMAND",
                 "PID",
