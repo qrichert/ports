@@ -14,11 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-use crate::cmd::ps::ProcessInfo;
 use std::error::Error;
 use std::fmt;
 use std::process::{Command, Output};
 use std::str::Lines;
+
+use crate::cmd::ps::ProcessInfo;
 
 #[derive(Eq, PartialEq)]
 pub struct LsofError {

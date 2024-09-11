@@ -18,6 +18,3 @@
 
 pub mod lsof;
 pub mod ps;
-
-pub use lsof::{ListeningPort, Lsof};
-pub use ps::{ProcessInfo, Ps};

@@ -14,11 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-use ports::cmd::{ListeningPort, Lsof, Ps};
 use std::env;
 use std::error::Error;
 use std::fmt;
+
 use verynicetable::Table;
+
+use ports::lsof::{ListeningPort, Lsof};
+use ports::ps::Ps;
 
 #[derive(Debug, Eq, PartialEq, PartialOrd)]
 enum Mode {
