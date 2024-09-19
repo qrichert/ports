@@ -18,6 +18,7 @@ use std::env;
 use std::error::Error;
 use std::fmt;
 
+use lessify::OutputPaged;
 use verynicetable::Table;
 
 use ports::lsof::{ListeningPort, Lsof};
@@ -212,20 +213,18 @@ fn regular(listening_ports: Vec<ListeningPort>) -> Result<(), Box<dyn Error>> {
         })
         .collect();
 
-    print!(
-        "{}",
-        Table::new()
-            .headers(&["COMMAND", "PID", "USER", "TYPE", "NODE", "HOST:PORT"])
-            .alignments(&[
-                fmt::Alignment::Left,
-                fmt::Alignment::Right,
-                fmt::Alignment::Left,
-                fmt::Alignment::Left,
-                fmt::Alignment::Left,
-                fmt::Alignment::Right
-            ])
-            .data(&listening_ports)
-    );
+    Table::new()
+        .headers(&["COMMAND", "PID", "USER", "TYPE", "NODE", "HOST:PORT"])
+        .alignments(&[
+            fmt::Alignment::Left,
+            fmt::Alignment::Right,
+            fmt::Alignment::Left,
+            fmt::Alignment::Left,
+            fmt::Alignment::Left,
+            fmt::Alignment::Right,
+        ])
+        .data(&listening_ports)
+        .output_paged();
 
     Ok(())
 }
@@ -256,29 +255,27 @@ fn verbose(mut listening_ports: Vec<ListeningPort>) -> Result<(), Box<dyn Error>
         })
         .collect();
 
-    print!(
-        "{}",
-        Table::new()
-            .headers(&[
-                "COMMAND",
-                "PID",
-                "USER",
-                "TYPE",
-                "NODE",
-                "HOST:PORT",
-                "COMMAND"
-            ])
-            .alignments(&[
-                fmt::Alignment::Left,
-                fmt::Alignment::Right,
-                fmt::Alignment::Left,
-                fmt::Alignment::Left,
-                fmt::Alignment::Left,
-                fmt::Alignment::Right,
-                fmt::Alignment::Left,
-            ])
-            .data(&listening_ports)
-    );
+    Table::new()
+        .headers(&[
+            "COMMAND",
+            "PID",
+            "USER",
+            "TYPE",
+            "NODE",
+            "HOST:PORT",
+            "COMMAND",
+        ])
+        .alignments(&[
+            fmt::Alignment::Left,
+            fmt::Alignment::Right,
+            fmt::Alignment::Left,
+            fmt::Alignment::Left,
+            fmt::Alignment::Left,
+            fmt::Alignment::Right,
+            fmt::Alignment::Left,
+        ])
+        .data(&listening_ports)
+        .output_paged();
 
     Ok(())
 }
@@ -313,37 +310,35 @@ fn very_verbose(mut listening_ports: Vec<ListeningPort>) -> Result<(), Box<dyn E
         })
         .collect();
 
-    print!(
-        "{}",
-        Table::new()
-            .headers(&[
-                "COMMAND",
-                "PID",
-                "USER",
-                "TYPE",
-                "NODE",
-                "HOST:PORT",
-                "%CPU",
-                "%MEM",
-                "START",
-                "TIME",
-                "COMMAND"
-            ])
-            .alignments(&[
-                fmt::Alignment::Left,
-                fmt::Alignment::Right,
-                fmt::Alignment::Left,
-                fmt::Alignment::Left,
-                fmt::Alignment::Left,
-                fmt::Alignment::Right,
-                fmt::Alignment::Right,
-                fmt::Alignment::Right,
-                fmt::Alignment::Right,
-                fmt::Alignment::Right,
-                fmt::Alignment::Left,
-            ])
-            .data(&listening_ports)
-    );
+    Table::new()
+        .headers(&[
+            "COMMAND",
+            "PID",
+            "USER",
+            "TYPE",
+            "NODE",
+            "HOST:PORT",
+            "%CPU",
+            "%MEM",
+            "START",
+            "TIME",
+            "COMMAND",
+        ])
+        .alignments(&[
+            fmt::Alignment::Left,
+            fmt::Alignment::Right,
+            fmt::Alignment::Left,
+            fmt::Alignment::Left,
+            fmt::Alignment::Left,
+            fmt::Alignment::Right,
+            fmt::Alignment::Right,
+            fmt::Alignment::Right,
+            fmt::Alignment::Right,
+            fmt::Alignment::Right,
+            fmt::Alignment::Left,
+        ])
+        .data(&listening_ports)
+        .output_paged();
 
     Ok(())
 }

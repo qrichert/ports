@@ -1,6 +1,6 @@
 [package]
 name = "ports"
-version = "0.4.1"
+version = "0.5.0"
 edition = "2021"
 authors = ["Quentin Richert <noreply@richert.co>"]
 description = "List listening ports."
@@ -17,5 +17,7 @@ strip = true
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(tarpaulin_include)'] }
 
 [dependencies]
+# Output text through a pager.
+lessify = "0.3.0"
 # Output in tabular format.
-verynicetable = "0.1.0"
+verynicetable = "0.3.0"
