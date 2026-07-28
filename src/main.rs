@@ -21,9 +21,7 @@ use std::fmt;
 use lessify::OutputPaged;
 use verynicetable::Table;
 
-use ports::listening_ports::ListeningPorts;
-use ports::lsof::ListeningPort;
-use ports::ps::Ps;
+use ports::{ListeningPort, ListeningPorts};
 
 #[derive(Debug, Eq, PartialEq, PartialOrd)]
 enum Mode {
@@ -223,13 +221,7 @@ fn regular(listening_ports: Vec<ListeningPort>) -> Result<(), Box<dyn Error>> {
 
 #[cfg(not(tarpaulin_include))]
 fn verbose(mut listening_ports: Vec<ListeningPort>) -> Result<(), Box<dyn Error>> {
-    // Enable more info through `ps aux`.
-    let pids: Vec<&String> = listening_ports.iter().map(|port| &port.pid).collect();
-    let processes_info = Ps::processes_info(&pids)?;
-
-    for port in &mut listening_ports {
-        port.enrich_with_process_info(&processes_info);
-    }
+    ListeningPorts::enrich_process_info(&mut listening_ports)?;
 
     let empty = String::new();
     let listening_ports: Vec<Vec<&String>> = listening_ports
@@ -264,13 +256,7 @@ fn verbose(mut listening_ports: Vec<ListeningPort>) -> Result<(), Box<dyn Error>
 
 #[cfg(not(tarpaulin_include))]
 fn very_verbose(mut listening_ports: Vec<ListeningPort>) -> Result<(), Box<dyn Error>> {
-    // Enable more info through `ps aux`.
-    let pids: Vec<&String> = listening_ports.iter().map(|port| &port.pid).collect();
-    let processes_info = Ps::processes_info(&pids)?;
-
-    for port in &mut listening_ports {
-        port.enrich_with_process_info(&processes_info);
-    }
+    ListeningPorts::enrich_process_info(&mut listening_ports)?;
 
     let empty = String::new();
     let listening_ports: Vec<Vec<&String>> = listening_ports

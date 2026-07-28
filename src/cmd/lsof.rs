@@ -35,7 +35,7 @@ use std::fmt;
 use std::process::{Command, Output};
 use std::str::Lines;
 
-use crate::cmd::ps::ProcessInfo;
+use crate::cmd::listening_ports::ListeningPort;
 
 #[derive(Eq, PartialEq)]
 pub struct LsofError {
@@ -53,79 +53,6 @@ impl fmt::Debug for LsofError {
 impl fmt::Display for LsofError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(self, f)
-    }
-}
-
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct ListeningPort {
-    pub command: String,
-    pub pid: String,
-    pub user: String,
-    pub type_: String,
-    pub node: String,
-    pub name: String,
-    pub pinfo: Option<ProcessInfo>,
-    _cannot_instantiate: std::marker::PhantomData<()>,
-}
-
-impl PartialOrd for ListeningPort {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl Ord for ListeningPort {
-    /// Sort by PID first, and then type (IPv4/IPv6).
-    ///
-    /// This enables easy line de-duplication in output, on top of
-    /// deterministic ordering.
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.pid
-            .parse::<u32>()
-            .unwrap_or(u32::MAX)
-            .cmp(&other.pid.parse::<u32>().unwrap_or(u32::MAX))
-            .then(self.type_.cmp(&other.type_))
-    }
-}
-
-impl ListeningPort {
-    #[must_use]
-    pub fn new() -> Self {
-        Self {
-            command: String::new(),
-            pid: String::new(),
-            user: String::new(),
-            type_: String::new(),
-            node: String::new(),
-            name: String::new(),
-            pinfo: None,
-            _cannot_instantiate: std::marker::PhantomData,
-        }
-    }
-
-    pub fn enrich_with_process_info(&mut self, process_info: &[ProcessInfo]) {
-        let pinfo = process_info.iter().find(|process| process.pid == self.pid);
-        if let Some(pinfo) = pinfo {
-            if self.command.is_empty() {
-                self.command = pinfo
-                    .command
-                    .split_ascii_whitespace()
-                    .next()
-                    .and_then(|command| command.rsplit('/').next())
-                    .unwrap_or_default()
-                    .to_string();
-            }
-            if self.user.is_empty() {
-                self.user.clone_from(&pinfo.user);
-            }
-            self.pinfo = Some(pinfo.clone());
-        }
-    }
-}
-
-impl Default for ListeningPort {
-    fn default() -> Self {
-        Self::new()
     }
 }
 
@@ -391,30 +318,6 @@ mod tests {
         );
     }
 
-    #[test]
-    fn listeningport_default() {
-        assert_eq!(ListeningPort::new(), ListeningPort::default());
-    }
-
-    #[test]
-    fn listeningport_new() {
-        let port = ListeningPort::new();
-
-        assert_eq!(
-            port,
-            ListeningPort {
-                command: String::new(),
-                pid: String::new(),
-                user: String::new(),
-                type_: String::new(),
-                node: String::new(),
-                name: String::new(),
-                pinfo: None,
-                _cannot_instantiate: std::marker::PhantomData,
-            }
-        );
-    }
-
     // The `Lsof::listening_ports()` should be integration tests. But at
     // this scale, it's easier like this.
 
@@ -674,107 +577,5 @@ This is again not included
                 _cannot_instantiate: std::marker::PhantomData
             }],
         );
-    }
-
-    #[test]
-    fn enrich_with_process_info_regular() {
-        let mut port = ListeningPort {
-            command: String::from("docker-pr"),
-            pid: String::from("2673"),
-            user: String::from("root"),
-            type_: String::from("IPv4"),
-            node: String::from("TCP"),
-            name: String::from("*:333"),
-            pinfo: None,
-            _cannot_instantiate: std::marker::PhantomData,
-        };
-
-        let mut process = ProcessInfo::new();
-        process.user = String::from("root");
-        process.pid = String::from("2673");
-        process.pc_cpu = String::from("0.0");
-        process.pc_mem = String::from("0.0");
-        process.start = String::from("09:27");
-        process.time = String::from("0:02");
-        process.command = String::from(
-            "/usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 333 -container-ip 172.19.0.4 -container-port 22",
-        );
-
-        let mut other_process = ProcessInfo::new();
-        other_process.user = String::from("colord");
-        other_process.pid = String::from("874");
-        other_process.pc_cpu = String::from("0.0");
-        other_process.pc_mem = String::from("0.1");
-        other_process.start = String::from("09:27");
-        other_process.time = String::from("0:00");
-        other_process.command = String::from("/usr/libexec/colord");
-
-        port.enrich_with_process_info(&[process.clone(), other_process]);
-
-        let pinfo = port.pinfo.unwrap();
-        assert_eq!(pinfo.pid, port.pid);
-        assert_eq!(pinfo, process);
-    }
-
-    #[test]
-    fn enrich_with_process_info_missing_process() {
-        let mut port = ListeningPort {
-            command: String::from("docker-pr"),
-            pid: String::from("2673"),
-            user: String::from("root"),
-            type_: String::from("IPv4"),
-            node: String::from("TCP"),
-            name: String::from("*:333"),
-            pinfo: None,
-            _cannot_instantiate: std::marker::PhantomData,
-        };
-
-        let mut other_process = ProcessInfo::new();
-        other_process.user = String::from("colord");
-        other_process.pid = String::from("874");
-        other_process.pc_cpu = String::from("0.0");
-        other_process.pc_mem = String::from("0.1");
-        other_process.start = String::from("09:27");
-        other_process.time = String::from("0:00");
-        other_process.command = String::from("/usr/libexec/colord");
-
-        port.enrich_with_process_info(&[other_process]);
-
-        assert!(port.pinfo.is_none());
-    }
-
-    #[test]
-    fn enrich_with_process_info_fills_missing_identity() {
-        let mut port = ListeningPort::new();
-        port.pid = String::from("2673");
-
-        let mut process = ProcessInfo::new();
-        process.user = String::from("root");
-        process.pid = String::from("2673");
-        process.command = String::from("/usr/bin/docker-proxy --help");
-
-        port.enrich_with_process_info(&[process]);
-
-        assert_eq!(port.command, "docker-proxy");
-        assert_eq!(port.user, "root");
-        assert!(port.pinfo.is_some());
-    }
-
-    #[test]
-    fn enrich_with_process_info_missing_no_processes() {
-        let mut port = ListeningPort {
-            command: String::from("docker-pr"),
-            pid: String::from("2673"),
-            user: String::from("root"),
-            type_: String::from("IPv4"),
-            node: String::from("TCP"),
-            name: String::from("*:333"),
-            pinfo: None,
-            _cannot_instantiate: std::marker::PhantomData,
-        };
-
-        port.enrich_with_process_info(&[]);
-
-        assert!(port.pinfo.is_none());
     }
 }

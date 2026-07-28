@@ -19,6 +19,8 @@ use std::fmt;
 use std::process::{Command, Output};
 use std::str::Lines;
 
+use crate::cmd::listening_ports::ProcessInfo;
+
 #[derive(Eq, PartialEq)]
 pub struct PsError {
     reason: &'static str,
@@ -35,40 +37,6 @@ impl fmt::Debug for PsError {
 impl fmt::Display for PsError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(self, f)
-    }
-}
-
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct ProcessInfo {
-    pub user: String,
-    pub pid: String,
-    pub pc_cpu: String,
-    pub pc_mem: String,
-    pub start: String,
-    pub time: String,
-    pub command: String,
-    _cannot_instantiate: std::marker::PhantomData<()>,
-}
-
-impl ProcessInfo {
-    #[must_use]
-    pub fn new() -> Self {
-        Self {
-            user: String::new(),
-            pid: String::new(),
-            pc_cpu: String::new(),
-            pc_mem: String::new(),
-            start: String::new(),
-            time: String::new(),
-            command: String::new(),
-            _cannot_instantiate: std::marker::PhantomData,
-        }
-    }
-}
-
-impl Default for ProcessInfo {
-    fn default() -> Self {
-        Self::new()
     }
 }
 
@@ -309,30 +277,6 @@ mod tests {
             res,
             PsError {
                 reason: "Unable to locate the ps executable on the system.",
-            }
-        );
-    }
-
-    #[test]
-    fn processinfo_default() {
-        assert_eq!(ProcessInfo::new(), ProcessInfo::default());
-    }
-
-    #[test]
-    fn processinfo_new() {
-        let process = ProcessInfo::new();
-
-        assert_eq!(
-            process,
-            ProcessInfo {
-                user: String::new(),
-                pid: String::new(),
-                pc_cpu: String::new(),
-                pc_mem: String::new(),
-                start: String::new(),
-                time: String::new(),
-                command: String::new(),
-                _cannot_instantiate: std::marker::PhantomData,
             }
         );
     }

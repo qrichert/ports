@@ -25,7 +25,7 @@ use std::error::Error;
 use std::fmt;
 use std::process::{Command, Output};
 
-use crate::cmd::lsof::ListeningPort;
+use crate::cmd::listening_ports::ListeningPort;
 
 #[derive(Eq, PartialEq)]
 pub struct SsError {

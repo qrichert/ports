@@ -10,7 +10,7 @@ checksum = "89e0f6ba27dc2612e7309ca5911aed706dca0afe47f14a4da6ed2c35bf161df0"
 
 [[package]]
 name = "ports"
-version = "0.7.0"
+version = "0.8.0"
 dependencies = [
  "lessify",
  "verynicetable",

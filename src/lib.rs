@@ -14,9 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pub mod cmd;
+mod cmd;
 
-pub use cmd::listening_ports;
 pub use cmd::lsof;
 pub use cmd::ps;
+#[cfg(target_os = "linux")]
 pub use cmd::ss;
+pub use cmd::{ListeningPort, ListeningPorts, ListeningPortsError, ProcessInfo};
