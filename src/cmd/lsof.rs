@@ -14,6 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+//! The `lsof` listening-port source.
+//!
+//! # Known platform quirks
+//!
+//! Linux `lsof` releases before 4.99.7 can silently omit a process when
+//! its name contains unbalanced parentheses. This affects Next.js 16:
+//! Linux truncates its task name to `next-server (v1`, which triggered
+//! the buggy `/proc/<pid>/stat` parser. See:
+//!
+//! - <https://github.com/qrichert/ports/issues/1>
+//! - <https://github.com/lsof-org/lsof/issues/359>
+//! - <https://github.com/lsof-org/lsof/commit/b46fc8f6af1726f3f30947ceca1cd14e802e0874>
+//!
+//! The higher-level aggregator therefore also queries `ss` on Linux,
+//! even when `lsof` exits successfully.
+
 use std::error::Error;
 use std::fmt;
 use std::process::{Command, Output};
@@ -64,13 +80,10 @@ impl Ord for ListeningPort {
     /// This enables easy line de-duplication in output, on top of
     /// deterministic ordering.
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        debug_assert!(self.pid.parse::<u32>().is_ok(), "{}", self.pid);
-        debug_assert!(other.pid.parse::<u32>().is_ok(), "{}", other.pid);
-
         self.pid
             .parse::<u32>()
-            .expect("PID came in malformed")
-            .cmp(&other.pid.parse::<u32>().expect("PID came in malformed"))
+            .unwrap_or(u32::MAX)
+            .cmp(&other.pid.parse::<u32>().unwrap_or(u32::MAX))
             .then(self.type_.cmp(&other.type_))
     }
 }
@@ -92,7 +105,21 @@ impl ListeningPort {
 
     pub fn enrich_with_process_info(&mut self, process_info: &[ProcessInfo]) {
         let pinfo = process_info.iter().find(|process| process.pid == self.pid);
-        self.pinfo = pinfo.cloned();
+        if let Some(pinfo) = pinfo {
+            if self.command.is_empty() {
+                self.command = pinfo
+                    .command
+                    .split_ascii_whitespace()
+                    .next()
+                    .and_then(|command| command.rsplit('/').next())
+                    .unwrap_or_default()
+                    .to_string();
+            }
+            if self.user.is_empty() {
+                self.user.clone_from(&pinfo.user);
+            }
+            self.pinfo = Some(pinfo.clone());
+        }
     }
 }
 
@@ -253,6 +280,10 @@ impl Lsof {
 
         // Each line is a `Vec` of columns (split on whitespace).
         for detail_line in detail_lines {
+            if detail_line.len() < header_columns.len() {
+                continue;
+            }
+
             // Better to have wasted intermediate `String::new()`s than
             // drag `Option`s around (`String::new()` doesn't allocate
             // and is cheap).
@@ -605,6 +636,19 @@ This is again not included
     }
 
     #[test]
+    fn map_detail_values_to_properties_skips_malformed_lines() {
+        let header_columns = Lsof::headers()
+            .iter()
+            .map(ToString::to_string)
+            .collect::<Vec<_>>();
+        let detail_lines = [vec!["command", "123"]];
+
+        let lsof = Lsof::map_detail_values_to_properties(&header_columns, &detail_lines);
+
+        assert!(lsof.is_empty());
+    }
+
+    #[test]
     fn map_detail_values_to_properties_extra_columns_are_ignored() {
         let header_columns = [
             String::from("PID"),
@@ -697,6 +741,23 @@ This is again not included
         port.enrich_with_process_info(&[other_process]);
 
         assert!(port.pinfo.is_none());
+    }
+
+    #[test]
+    fn enrich_with_process_info_fills_missing_identity() {
+        let mut port = ListeningPort::new();
+        port.pid = String::from("2673");
+
+        let mut process = ProcessInfo::new();
+        process.user = String::from("root");
+        process.pid = String::from("2673");
+        process.command = String::from("/usr/bin/docker-proxy --help");
+
+        port.enrich_with_process_info(&[process]);
+
+        assert_eq!(port.command, "docker-proxy");
+        assert_eq!(port.user, "root");
+        assert!(port.pinfo.is_some());
     }
 
     #[test]

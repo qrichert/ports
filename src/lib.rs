@@ -16,5 +16,7 @@
 
 pub mod cmd;
 
+pub use cmd::listening_ports;
 pub use cmd::lsof;
 pub use cmd::ps;
+pub use cmd::ss;

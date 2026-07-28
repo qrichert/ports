@@ -21,7 +21,8 @@ use std::fmt;
 use lessify::OutputPaged;
 use verynicetable::Table;
 
-use ports::lsof::{ListeningPort, Lsof};
+use ports::listening_ports::ListeningPorts;
+use ports::lsof::ListeningPort;
 use ports::ps::Ps;
 
 #[derive(Debug, Eq, PartialEq, PartialOrd)]
@@ -163,7 +164,7 @@ fn version() {
 
 #[cfg(not(tarpaulin_include))]
 fn run(config: &Config) -> Result<(), Box<dyn Error>> {
-    let mut listening_ports = Lsof::listening_ports()?;
+    let mut listening_ports = ListeningPorts::all()?;
 
     if !config.port_filters.is_empty() {
         filter_ports(&mut listening_ports, &config.port_filters);

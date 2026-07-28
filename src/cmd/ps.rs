@@ -196,6 +196,10 @@ impl Ps {
 
         // Each line is a `Vec` of columns (split on whitespace).
         for detail_line in detail_lines {
+            if detail_line.len() < header_columns.len() {
+                continue;
+            }
+
             let mut process = ProcessInfo::new();
 
             for col in 0..header_columns.len() {
@@ -565,6 +569,19 @@ This is included too
         let ps = Ps::map_detail_values_to_properties(&header_columns, &detail_lines);
 
         assert_eq!(ps, vec![],);
+    }
+
+    #[test]
+    fn map_detail_values_to_properties_skips_malformed_lines() {
+        let header_columns = Ps::headers()
+            .iter()
+            .map(ToString::to_string)
+            .collect::<Vec<_>>();
+        let detail_lines = [vec!["user", "123"]];
+
+        let ps = Ps::map_detail_values_to_properties(&header_columns, &detail_lines);
+
+        assert!(ps.is_empty());
     }
 
     #[test]

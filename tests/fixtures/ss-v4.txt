@@ -1,0 +1,2 @@
+LISTEN 0 4096 127.0.0.53%lo:53 0.0.0.0:* uid:101 ino:12345 sk:1
+LISTEN 0 128 127.0.0.1:8000 0.0.0.0:* users:(("python3",pid=1234,fd=3),("python3",pid=1235,fd=3)) uid:1000 ino:23456 sk:2

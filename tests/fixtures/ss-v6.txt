@@ -1,0 +1,2 @@
+LISTEN 0 511 [::]:3000 [::]:* users:(("next-server (v1",pid=651003,fd=24)) uid:1000 ino:34567 sk:3
+LISTEN 0 128 [::1]:42729 [::]:* users:(("ssh",pid=7787,fd=4)) uid:1000 ino:45678 sk:4

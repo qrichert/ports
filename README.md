@@ -10,6 +10,10 @@ _List listening ports._
 It's sometimes hard to keep track of which process uses which port, or
 what is running in the background.
 
+`ports` is lightweight CLI sugar over commonly available system tools.
+It combines and normalizes information from `lsof`, `ss`, and `ps`, then
+presents it in one consistent view.
+
 ```console
 $ ports 8000 50000-65535
 COMMAND      PID  USER           HOST:PORT
