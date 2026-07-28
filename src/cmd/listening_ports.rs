@@ -16,10 +16,10 @@
 
 //! Aggregate listening-port observations from platform tools.
 //!
-//! Linux queries both `lsof` and `ss`. Either source may be incomplete
-//! even when it exits successfully, so their results are merged rather
-//! than using one only when the other fails. Other platforms currently
-//! use `lsof`.
+//! Linux supplements a successful `lsof` result with PID-bearing
+//! observations from `ss`, because either source may omit listeners
+//! even when it exits successfully. Other platforms currently use
+//! `lsof`.
 
 use std::error::Error;
 use std::fmt;
@@ -160,26 +160,19 @@ pub struct ListeningPorts;
 impl ListeningPorts {
     /// List listening ports from every available platform source.
     ///
-    /// On Linux, `lsof` and `ss` are both queried because a successful
-    /// result from either command may still be incomplete. Results are
-    /// combined when both work; one successful source is sufficient.
+    /// On Linux, a successful `lsof` result is supplemented with
+    /// PID-bearing observations from `ss`, because either command may
+    /// omit listeners even when it exits successfully.
     ///
     /// # Errors
     ///
-    /// Errors if no platform source succeeds.
+    /// Errors if `lsof` fails.
     pub fn all() -> Result<Vec<ListeningPort>, ListeningPortsError> {
         #[cfg(target_os = "linux")]
         {
             let lsof = Lsof::listening_ports().map_err(|error| error.to_string());
             let ss = Ss::listening_ports().map_err(|error| error.to_string());
-            let mut listening_ports = Self::aggregate(lsof, ss)?;
-
-            // `ss` does not expose a username. Reuse the existing `ps`
-            // source as best-effort enrichment without making socket
-            // enumeration depend on it.
-            _ = Self::enrich_process_info(&mut listening_ports);
-
-            return Ok(listening_ports);
+            Self::aggregate(lsof, ss)
         }
 
         #[cfg(not(target_os = "linux"))]
@@ -198,16 +191,48 @@ impl ListeningPorts {
     pub fn enrich_process_info(
         listening_ports: &mut [ListeningPort],
     ) -> Result<(), ListeningPortsError> {
-        let pids: Vec<&String> = listening_ports
+        Self::enrich_process_info_where(listening_ports, |port| !port.pid.is_empty())
+    }
+
+    /// Add process metadata where command or user identity is missing.
+    ///
+    /// Rows without a PID cannot be enriched and do not trigger a
+    /// process query.
+    ///
+    /// # Errors
+    ///
+    /// Errors if process information cannot be queried.
+    pub fn enrich_missing_identity(
+        listening_ports: &mut [ListeningPort],
+    ) -> Result<(), ListeningPortsError> {
+        Self::enrich_process_info_where(listening_ports, |port| {
+            !port.pid.is_empty() && (port.command.is_empty() || port.user.is_empty())
+        })
+    }
+
+    fn enrich_process_info_where(
+        listening_ports: &mut [ListeningPort],
+        should_enrich: impl Fn(&ListeningPort) -> bool,
+    ) -> Result<(), ListeningPortsError> {
+        let mut pids: Vec<&String> = listening_ports
             .iter()
-            .filter_map(|port| (!port.pid.is_empty()).then_some(&port.pid))
+            .filter_map(|port| should_enrich(port).then_some(&port.pid))
             .collect();
+        pids.sort_unstable();
+        pids.dedup();
+
+        if pids.is_empty() {
+            return Ok(());
+        }
+
         let processes_info = Ps::processes_info(&pids).map_err(|error| ListeningPortsError {
             reason: error.to_string(),
         })?;
 
         for port in listening_ports {
-            port.enrich_with_process_info(&processes_info);
+            if should_enrich(port) {
+                port.enrich_with_process_info(&processes_info);
+            }
         }
 
         Ok(())
@@ -218,19 +243,10 @@ impl ListeningPorts {
         lsof: Result<Vec<ListeningPort>, String>,
         ss: Result<Vec<ListeningPort>, String>,
     ) -> Result<Vec<ListeningPort>, ListeningPortsError> {
-        let mut listening_ports = match (lsof, ss) {
-            (Ok(mut lsof), Ok(ss)) => {
-                Self::merge(&mut lsof, ss);
-                lsof
-            }
-            (Ok(lsof), Err(_)) => lsof,
-            (Err(_), Ok(ss)) => ss,
-            (Err(lsof), Err(ss)) => {
-                return Err(ListeningPortsError {
-                    reason: format!("Unable to list listening ports. lsof: {lsof} ss: {ss}"),
-                });
-            }
-        };
+        let mut listening_ports = lsof.map_err(|reason| ListeningPortsError { reason })?;
+        if let Ok(ss) = ss {
+            Self::merge(&mut listening_ports, ss);
+        }
 
         Self::sort(&mut listening_ports);
         Ok(listening_ports)
@@ -240,12 +256,6 @@ impl ListeningPorts {
     fn merge(listening_ports: &mut Vec<ListeningPort>, additional: Vec<ListeningPort>) {
         for candidate in additional {
             if candidate.pid.is_empty() {
-                if !listening_ports
-                    .iter()
-                    .any(|port| Self::same_socket(port, &candidate))
-                {
-                    listening_ports.push(candidate);
-                }
                 continue;
             }
 
@@ -257,9 +267,9 @@ impl ListeningPorts {
                 continue;
             }
 
-            // A source without process visibility may have contributed an
-            // ownerless row for this socket. Replace it with the observed
-            // owner rather than displaying both.
+            // If the primary source contributed an ownerless row for
+            // this socket, replace it with the observed owner rather
+            // than displaying both.
             listening_ports
                 .retain(|port| !port.pid.is_empty() || !Self::same_socket(port, &candidate));
             listening_ports.push(candidate);
@@ -268,7 +278,44 @@ impl ListeningPorts {
 
     #[cfg(any(target_os = "linux", test))]
     fn same_socket(left: &ListeningPort, right: &ListeningPort) -> bool {
-        left.type_ == right.type_ && left.node == right.node && left.name == right.name
+        left.type_ == right.type_
+            && left.node == right.node
+            && Self::same_socket_name(&left.name, &right.name)
+    }
+
+    #[cfg(any(target_os = "linux", test))]
+    fn same_socket_name(left: &str, right: &str) -> bool {
+        if left == right {
+            return true;
+        }
+
+        let (
+            Some((left_address, left_scope, left_port)),
+            Some((right_address, right_scope, right_port)),
+        ) = (
+            Self::split_socket_name(left),
+            Self::split_socket_name(right),
+        )
+        else {
+            return false;
+        };
+
+        left_address == right_address
+            && left_port == right_port
+            && (left_scope == right_scope || left_scope.is_none() || right_scope.is_none())
+    }
+
+    #[cfg(any(target_os = "linux", test))]
+    fn split_socket_name(name: &str) -> Option<(&str, Option<&str>, &str)> {
+        let (address, port) = name.rsplit_once(':')?;
+        let (address, scope) = address
+            .rsplit_once('%')
+            .map_or((address, None), |(address, scope)| (address, Some(scope)));
+        let address = address.strip_prefix('[').unwrap_or(address);
+        let address = address.strip_suffix(']').unwrap_or(address);
+        let scope = scope.map(|scope| scope.strip_suffix(']').unwrap_or(scope));
+
+        Some((address, scope, port))
     }
 
     #[cfg(any(target_os = "linux", test))]
@@ -286,16 +333,7 @@ impl ListeningPorts {
 
     #[cfg(any(target_os = "linux", test))]
     fn sort(listening_ports: &mut [ListeningPort]) {
-        listening_ports.sort_by(|left, right| {
-            let left_pid = left.pid.parse::<u32>().unwrap_or(u32::MAX);
-            let right_pid = right.pid.parse::<u32>().unwrap_or(u32::MAX);
-
-            left_pid
-                .cmp(&right_pid)
-                .then(left.type_.cmp(&right.type_))
-                .then(left.name.cmp(&right.name))
-                .then(left.command.cmp(&right.command))
-        });
+        listening_ports.sort();
     }
 }
 
@@ -381,6 +419,36 @@ mod tests {
     }
 
     #[test]
+    fn enrich_process_info_skips_ownerless_rows() {
+        let mut listening_ports = vec![port("", "IPv4", "127.0.0.53:53", "")];
+
+        ListeningPorts::enrich_process_info(&mut listening_ports).unwrap();
+
+        assert!(listening_ports[0].pinfo.is_none());
+    }
+
+    #[test]
+    fn enrich_missing_identity_queries_ps_for_incomplete_rows() {
+        let mut listening_ports = vec![port("2673", "IPv4", "*:333", "docker-pr")];
+
+        ListeningPorts::enrich_missing_identity(&mut listening_ports).unwrap();
+
+        assert_eq!(listening_ports[0].user, "root");
+        assert!(listening_ports[0].pinfo.is_some());
+    }
+
+    #[test]
+    fn enrich_missing_identity_skips_complete_rows() {
+        let mut complete = port("2673", "IPv4", "*:333", "docker-pr");
+        complete.user = "root".to_string();
+        let mut listening_ports = vec![complete];
+
+        ListeningPorts::enrich_missing_identity(&mut listening_ports).unwrap();
+
+        assert!(listening_ports[0].pinfo.is_none());
+    }
+
+    #[test]
     fn error_debug() {
         let error = ListeningPortsError {
             reason: "an error has occurred".to_string(),
@@ -413,6 +481,17 @@ mod tests {
                 .iter()
                 .any(|port| port.pid == "651003" && port.name == "*:3000")
         );
+        assert_eq!(
+            listening_ports
+                .iter()
+                .filter(|port| {
+                    port.type_ == "IPv4"
+                        && port.node == "TCP"
+                        && port.name.starts_with("127.0.0.53")
+                })
+                .count(),
+            1
+        );
     }
 
     #[test]
@@ -439,24 +518,21 @@ mod tests {
     }
 
     #[test]
-    fn aggregate_uses_ss_when_lsof_fails() {
+    fn aggregate_errors_when_lsof_fails() {
         let ss = vec![port("200", "IPv6", "*:3000", "next-server (v1")];
 
-        let listening_ports =
-            ListeningPorts::aggregate(Err("lsof failed".to_string()), Ok(ss)).unwrap();
+        let error = ListeningPorts::aggregate(Err("lsof failed".to_string()), Ok(ss)).unwrap_err();
 
-        assert_eq!(listening_ports.len(), 1);
-        assert_eq!(listening_ports[0].pid, "200");
+        assert_eq!(error.to_string(), "lsof failed");
     }
 
     #[test]
-    fn aggregate_errors_when_both_sources_fail() {
+    fn aggregate_preserves_lsof_error_when_both_sources_fail() {
         let error =
             ListeningPorts::aggregate(Err("lsof failed".to_string()), Err("ss failed".to_string()))
                 .unwrap_err();
 
-        assert!(error.to_string().contains("lsof failed"));
-        assert!(error.to_string().contains("ss failed"));
+        assert_eq!(error.to_string(), "lsof failed");
     }
 
     #[test]
@@ -468,6 +544,28 @@ mod tests {
 
         assert_eq!(listening_ports.len(), 1);
         assert_eq!(listening_ports[0].command, "python");
+    }
+
+    #[test]
+    fn merge_reconciles_interface_scoped_address() {
+        let mut listening_ports = vec![port("580", "IPv4", "127.0.0.53:53", "systemd-resolve")];
+        let additional = vec![port("580", "IPv4", "127.0.0.53%lo:53", "systemd-resolve")];
+
+        ListeningPorts::merge(&mut listening_ports, additional);
+
+        assert_eq!(listening_ports.len(), 1);
+        assert_eq!(listening_ports[0].name, "127.0.0.53:53");
+        assert_eq!(listening_ports[0].pid, "580");
+    }
+
+    #[test]
+    fn merge_preserves_addresses_with_different_explicit_scopes() {
+        let mut listening_ports = vec![port("100", "IPv6", "[fe80::1]%eth0:3000", "server")];
+        let additional = vec![port("100", "IPv6", "[fe80::1]%eth1:3000", "server")];
+
+        ListeningPorts::merge(&mut listening_ports, additional);
+
+        assert_eq!(listening_ports.len(), 2);
     }
 
     #[test]
@@ -492,14 +590,25 @@ mod tests {
     }
 
     #[test]
-    fn merge_keeps_ownerless_socket_when_no_owner_is_visible() {
+    fn merge_discards_ownerless_supplemental_socket() {
         let mut listening_ports = Vec::new();
         let additional = vec![port("", "IPv6", "*:3000", "")];
 
         ListeningPorts::merge(&mut listening_ports, additional);
 
-        assert_eq!(listening_ports.len(), 1);
-        assert!(listening_ports[0].pid.is_empty());
+        assert!(listening_ports.is_empty());
+    }
+
+    #[test]
+    fn socket_names_reconcile_ipv6_scope_placements() {
+        assert!(ListeningPorts::same_socket_name(
+            "[fe80::1]:3000",
+            "[fe80::1]%eth0:3000"
+        ));
+        assert!(ListeningPorts::same_socket_name(
+            "[fe80::1]:3000",
+            "[fe80::1%eth0]:3000"
+        ));
     }
 
     #[test]
@@ -515,5 +624,18 @@ mod tests {
         assert_eq!(listening_ports[0].pid, "10");
         assert_eq!(listening_ports[1].pid, "20");
         assert!(listening_ports[2].pid.is_empty());
+    }
+
+    #[test]
+    fn sort_preserves_existing_order_within_pid_and_type() {
+        let mut listening_ports = vec![
+            port("10", "IPv4", "*:9000", "z-command"),
+            port("10", "IPv4", "*:1000", "a-command"),
+        ];
+
+        ListeningPorts::sort(&mut listening_ports);
+
+        assert_eq!(listening_ports[0].name, "*:9000");
+        assert_eq!(listening_ports[1].name, "*:1000");
     }
 }

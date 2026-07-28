@@ -197,30 +197,52 @@ impl Ss {
     }
 
     fn extract_processes(line: &str) -> Vec<(String, String)> {
+        let Some((_, metadata)) = line.split_once("users:(") else {
+            return Vec::new();
+        };
+
         let mut processes = Vec::new();
-        let mut offset = 0;
+        let mut entry_start = 0;
+        let mut search_offset = 0;
 
-        while let Some(relative_pid) = line[offset..].find("pid=") {
-            let pid_start = offset + relative_pid + "pid=".len();
-            let pid_end = line[pid_start..]
+        // iproute2 prints task names verbatim, including quotes and parentheses.
+        // Locate owner records by their numeric suffix instead of parsing the name.
+        while let Some(relative_pid) = metadata[search_offset..].find("\",pid=") {
+            let command_end = search_offset + relative_pid;
+            let next_candidate = command_end + 1;
+            let pid_start = command_end + "\",pid=".len();
+            let pid_end = metadata[pid_start..]
                 .find(|character: char| !character.is_ascii_digit())
-                .map_or(line.len(), |end| pid_start + end);
+                .map_or(metadata.len(), |end| pid_start + end);
 
-            if pid_start == pid_end {
-                offset = pid_end;
+            if pid_start == pid_end || !metadata[pid_end..].starts_with(",fd=") {
+                search_offset = next_candidate;
                 continue;
             }
 
-            let before_pid = &line[..pid_start - "pid=".len()];
-            let command = before_pid
-                .rfind("\",")
-                .and_then(|command_end| {
-                    before_pid[..command_end]
-                        .rfind("(\"")
-                        .map(|command_start| &before_pid[command_start + 2..command_end])
-                })
-                .unwrap_or_default();
-            let pid = &line[pid_start..pid_end];
+            let fd_start = pid_end + ",fd=".len();
+            let fd_end = metadata[fd_start..]
+                .find(|character: char| !character.is_ascii_digit())
+                .map_or(metadata.len(), |end| fd_start + end);
+            if fd_start == fd_end
+                || metadata.as_bytes().get(fd_end).copied() != Some(b')')
+                || !matches!(
+                    metadata.as_bytes().get(fd_end + 1).copied(),
+                    Some(b',' | b')')
+                )
+            {
+                search_offset = next_candidate;
+                continue;
+            }
+
+            let Some(relative_command_start) = metadata[entry_start..command_end].find("(\"")
+            else {
+                search_offset = next_candidate;
+                continue;
+            };
+            let command_start = entry_start + relative_command_start + "(\"".len();
+            let command = &metadata[command_start..command_end];
+            let pid = &metadata[pid_start..pid_end];
 
             if !processes
                 .iter()
@@ -229,7 +251,12 @@ impl Ss {
                 processes.push((command.to_string(), pid.to_string()));
             }
 
-            offset = pid_end;
+            let entry_end = fd_end + 1;
+            if metadata.as_bytes().get(entry_end).copied() == Some(b')') {
+                break;
+            }
+            entry_start = entry_end;
+            search_offset = entry_end;
         }
 
         processes
@@ -375,6 +402,50 @@ mod tests {
         let listening_ports = Ss::parse(output, IpVersion::V4);
 
         assert_eq!(listening_ports.len(), 1);
+        assert_eq!(listening_ports[0].pid, "1234");
+    }
+
+    #[test]
+    fn parse_ignores_pid_text_in_process_name() {
+        let output = r#"LISTEN 0 128 127.0.0.1:8000 0.0.0.0:* users:(("pid=999",pid=1234,fd=3))"#;
+
+        let listening_ports = Ss::parse(output, IpVersion::V4);
+
+        assert_eq!(listening_ports.len(), 1);
+        assert_eq!(listening_ports[0].command, "pid=999");
+        assert_eq!(listening_ports[0].pid, "1234");
+    }
+
+    #[test]
+    fn parse_handles_literal_quote_and_unbalanced_parenthesis_in_process_name() {
+        let output = r#"LISTEN 0 128 127.0.0.1:8000 0.0.0.0:* users:(("next"(v1",pid=1234,fd=3))"#;
+
+        let listening_ports = Ss::parse(output, IpVersion::V4);
+
+        assert_eq!(listening_ports.len(), 1);
+        assert_eq!(listening_ports[0].command, r#"next"(v1"#);
+        assert_eq!(listening_ports[0].pid, "1234");
+    }
+
+    #[test]
+    fn parse_ignores_complete_owner_suffix_in_process_name() {
+        let output = r#"LISTEN 0 128 127.0.0.1:8000 0.0.0.0:* users:(("fake",pid=999,fd=3)",pid=1234,fd=4))"#;
+
+        let listening_ports = Ss::parse(output, IpVersion::V4);
+
+        assert_eq!(listening_ports.len(), 1);
+        assert_eq!(listening_ports[0].command, r#"fake",pid=999,fd=3)"#);
+        assert_eq!(listening_ports[0].pid, "1234");
+    }
+
+    #[test]
+    fn parse_ignores_pid_text_outside_process_metadata() {
+        let output = r#"LISTEN 0 128 127.0.0.1:8000 0.0.0.0:* users:(("python3",pid=1234,fd=3)) uid:1000 diagnostic:pid=999"#;
+
+        let listening_ports = Ss::parse(output, IpVersion::V4);
+
+        assert_eq!(listening_ports.len(), 1);
+        assert_eq!(listening_ports[0].command, "python3");
         assert_eq!(listening_ports[0].pid, "1234");
     }
 

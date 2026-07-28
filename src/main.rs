@@ -173,10 +173,24 @@ fn run(config: &Config) -> Result<(), Box<dyn Error>> {
     }
 
     match config.mode {
-        Mode::Regular => regular(listening_ports),
-        Mode::Verbose => verbose(listening_ports),
-        Mode::VeryVerbose => very_verbose(listening_ports),
+        Mode::Regular => {
+            // `ss` cannot always report user identity. Enrich only
+            // affected rows, without making regular output depend on
+            // the availability of `ps`.
+            _ = ListeningPorts::enrich_missing_identity(&mut listening_ports);
+            regular(&listening_ports);
+        }
+        Mode::Verbose => {
+            ListeningPorts::enrich_process_info(&mut listening_ports)?;
+            verbose(&listening_ports);
+        }
+        Mode::VeryVerbose => {
+            ListeningPorts::enrich_process_info(&mut listening_ports)?;
+            very_verbose(&listening_ports);
+        }
     }
+
+    Ok(())
 }
 
 /// Retain only ports in the `allowed` list.
@@ -193,10 +207,8 @@ fn filter_ports(listening_ports: &mut Vec<ListeningPort>, allowed: &[String]) {
     });
 }
 
-// Yes, bad, I know. But I want the same signature for all modes.
-#[allow(clippy::needless_pass_by_value, clippy::unnecessary_wraps)]
 #[cfg(not(tarpaulin_include))]
-fn regular(listening_ports: Vec<ListeningPort>) -> Result<(), Box<dyn Error>> {
+fn regular(listening_ports: &[ListeningPort]) {
     let mut listening_ports: Vec<Vec<&String>> = listening_ports
         .iter()
         .map(|port| vec![&port.command, &port.pid, &port.user, &port.name])
@@ -215,14 +227,10 @@ fn regular(listening_ports: Vec<ListeningPort>) -> Result<(), Box<dyn Error>> {
         ])
         .data(&listening_ports)
         .output_paged();
-
-    Ok(())
 }
 
 #[cfg(not(tarpaulin_include))]
-fn verbose(mut listening_ports: Vec<ListeningPort>) -> Result<(), Box<dyn Error>> {
-    ListeningPorts::enrich_process_info(&mut listening_ports)?;
-
+fn verbose(listening_ports: &[ListeningPort]) {
     let empty = String::new();
     let listening_ports: Vec<Vec<&String>> = listening_ports
         .iter()
@@ -250,14 +258,10 @@ fn verbose(mut listening_ports: Vec<ListeningPort>) -> Result<(), Box<dyn Error>
         ])
         .data(&listening_ports)
         .output_paged();
-
-    Ok(())
 }
 
 #[cfg(not(tarpaulin_include))]
-fn very_verbose(mut listening_ports: Vec<ListeningPort>) -> Result<(), Box<dyn Error>> {
-    ListeningPorts::enrich_process_info(&mut listening_ports)?;
-
+fn very_verbose(listening_ports: &[ListeningPort]) {
     let empty = String::new();
     let listening_ports: Vec<Vec<&String>> = listening_ports
         .iter()
@@ -307,8 +311,6 @@ fn very_verbose(mut listening_ports: Vec<ListeningPort>) -> Result<(), Box<dyn E
         ])
         .data(&listening_ports)
         .output_paged();
-
-    Ok(())
 }
 
 #[cfg(test)]
