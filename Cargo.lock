@@ -4,9 +4,9 @@ version = 4
 
 [[package]]
 name = "lessify"
-version = "0.4.0"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "89e0f6ba27dc2612e7309ca5911aed706dca0afe47f14a4da6ed2c35bf161df0"
+checksum = "76f085128bedce805586967170ca915ac639b52cf67b508ac898e8207cc88216"
 
 [[package]]
 name = "ports"
@@ -18,6 +18,6 @@ dependencies = [
 
 [[package]]
 name = "verynicetable"
-version = "0.6.2"
+version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b4ef28ad017222f38af021441ec0bcdec6d6ae70a208e958a4ba2e7fa7c608ee"
+checksum = "0e5728ef1bf8676a2a111d16a435a37516efef92359d0235a7e1c48eab7cb763"

@@ -21,6 +21,6 @@ unexpected_cfgs = { level = "warn", check-cfg = ['cfg(tarpaulin_include)'] }
 
 [dependencies]
 # Output text through a pager.
-lessify = "0.4.0"
+lessify = "0.6.0"
 # Output in tabular format.
-verynicetable = "0.6.2"
+verynicetable = "0.6.3"
