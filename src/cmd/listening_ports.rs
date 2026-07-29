@@ -170,8 +170,15 @@ impl ListeningPorts {
     pub fn all() -> Result<Vec<ListeningPort>, ListeningPortsError> {
         #[cfg(target_os = "linux")]
         {
-            let lsof = Lsof::listening_ports().map_err(|error| error.to_string());
-            let ss = Ss::listening_ports().map_err(|error| error.to_string());
+            let (lsof, ss) = std::thread::scope(|scope| {
+                let ss = scope.spawn(|| Ss::listening_ports().map_err(|error| error.to_string()));
+                let lsof = Lsof::listening_ports().map_err(|error| error.to_string());
+                let ss = match ss.join() {
+                    Ok(ss) => ss,
+                    Err(panic) => std::panic::resume_unwind(panic),
+                };
+                (lsof, ss)
+            });
             Self::aggregate(lsof, ss)
         }
 
