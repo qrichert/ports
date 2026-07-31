@@ -53,27 +53,18 @@ Transmiss  94671  Quentin  IPv6  TCP           *:51413   0.0   0.2   3Aug24   96
 
 ## Installation
 
-### Directly
-
-```console
-$ wget https://github.com/qrichert/ports/releases/download/X.X.X/ports-X.X.X-xxx
-$ sudo install ./ports-* /usr/local/bin/ports
-```
-
-### Manual Build
-
-#### System-wide
-
-```console
-$ git clone https://github.com/qrichert/ports.git
-$ cd ports
-$ just build
-$ sudo just install
-```
-
-#### Through Cargo
+Install from [crates.io] with Cargo:
 
 ```shell
 cargo install ports
-cargo install --git https://github.com/qrichert/ports.git
 ```
+
+Pre-built binaries for Linux and macOS are available on the [latest
+GitHub release].
+
+[Documentation] is available on docs.rs.
+
+[crates.io]: https://crates.io/crates/ports
+[latest GitHub release]:
+  https://github.com/qrichert/ports/releases/latest
+[Documentation]: https://docs.rs/ports
