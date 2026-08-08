@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use std::env;
 use std::error::Error;
 use std::fmt;
@@ -19,9 +20,9 @@ struct Config {
     help: bool,
     version: bool,
     mode: Mode,
-    // List of ports that will be _retained_ in the output if non-empty.
-    // If the list is empty, there won't be any filtering.
-    port_filters: Vec<String>,
+    // Set of ports that will be _retained_ in the output if non-empty.
+    // If the set is empty, there won't be any filtering.
+    port_filters: HashSet<u16>,
 }
 
 impl Default for Config {
@@ -30,7 +31,7 @@ impl Default for Config {
             help: false,
             version: false,
             mode: Mode::Regular,
-            port_filters: Vec::new(),
+            port_filters: HashSet::new(),
         }
     }
 }
@@ -61,10 +62,9 @@ impl Config {
                     }
                     config.mode = Mode::VeryVerbose;
                 }
-                // Single port.
-                port if port.parse::<u16>().is_ok() => {
-                    // 0-65535
-                    config.port_filters.push(String::from(port));
+                // Single port (0-65535).
+                port if let Ok(port) = port.parse::<u16>() => {
+                    config.port_filters.insert(port);
                 }
                 // Range of ports (contains `-`).
                 range
@@ -76,15 +76,7 @@ impl Config {
                     let range_start = std::cmp::min(start, end);
                     let range_end = std::cmp::max(start, end);
 
-                    // The bigger the range, the more we allocate...
-                    // But it doesn't look like a bottleneck on a human
-                    // time scale. If it ever gets to be a problem,
-                    // we'll need to handle ranges differently.
-                    let ports: Vec<String> = (range_start..=range_end)
-                        .map(|port| port.to_string())
-                        .collect();
-
-                    config.port_filters.extend(ports);
+                    config.port_filters.extend(range_start..=range_end);
                 }
                 arg => {
                     return Err(format!("Unknown argument: '{arg}'"));
@@ -177,8 +169,8 @@ fn run(config: &Config) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-/// Retain only ports in the `allowed` list.
-fn filter_ports(listening_ports: &mut Vec<ListeningPort>, allowed: &[String]) {
+/// Retain only ports in the `allowed` set.
+fn filter_ports(listening_ports: &mut Vec<ListeningPort>, allowed: &HashSet<u16>) {
     listening_ports.retain(|x| {
         let mut listening_on = x.name.as_str(); // '1337'
 
@@ -187,7 +179,9 @@ fn filter_ports(listening_ports: &mut Vec<ListeningPort>, allowed: &[String]) {
             listening_on = port;
         }
 
-        allowed.contains(&listening_on.to_string())
+        listening_on
+            .parse::<u16>()
+            .is_ok_and(|port| allowed.contains(&port))
     });
 }
 
@@ -312,7 +306,7 @@ mod tests {
                 help: false,
                 version: false,
                 mode: Mode::Regular,
-                port_filters: Vec::new(),
+                port_filters: HashSet::new(),
             }
         );
     }
@@ -328,7 +322,7 @@ mod tests {
                 help: false,
                 version: false,
                 mode: Mode::Regular,
-                port_filters: Vec::new(),
+                port_filters: HashSet::new(),
             }
         );
     }
@@ -450,10 +444,15 @@ mod tests {
         let args = vec![String::new(), String::from("1337"), String::from("42069")].into_iter();
         let config = Config::new(args).unwrap();
 
-        assert_eq!(
-            config.port_filters,
-            &[String::from("1337"), String::from("42069")]
-        );
+        assert_eq!(config.port_filters, HashSet::from([1337, 42069]));
+    }
+
+    #[test]
+    fn config_filters_normalizes_leading_zeros() {
+        let args = vec![String::new(), String::from("01337")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.port_filters, HashSet::from([1337]));
     }
 
     #[test]
@@ -487,14 +486,7 @@ mod tests {
 
         assert_eq!(
             config.port_filters,
-            &[
-                String::from("1000"),
-                String::from("1001"),
-                String::from("1002"),
-                String::from("1003"),
-                String::from("1004"),
-                String::from("1005"),
-            ]
+            HashSet::from([1000, 1001, 1002, 1003, 1004, 1005])
         );
     }
 
@@ -505,14 +497,7 @@ mod tests {
 
         assert_eq!(
             config.port_filters,
-            &[
-                String::from("1000"),
-                String::from("1001"),
-                String::from("1002"),
-                String::from("1003"),
-                String::from("1004"),
-                String::from("1005"),
-            ]
+            HashSet::from([1000, 1001, 1002, 1003, 1004, 1005])
         );
     }
 
@@ -528,18 +513,9 @@ mod tests {
 
         assert_eq!(
             config.port_filters,
-            &[
-                String::from("1000"),
-                String::from("1001"),
-                String::from("1002"),
-                String::from("1003"),
-                String::from("1004"),
-                String::from("1005"),
-                String::from("40000"),
-                String::from("40001"),
-                String::from("40002"),
-                String::from("40003"),
-            ]
+            HashSet::from([
+                1000, 1001, 1002, 1003, 1004, 1005, 40000, 40001, 40002, 40003
+            ])
         );
     }
 
@@ -555,15 +531,7 @@ mod tests {
 
         assert_eq!(
             config.port_filters,
-            &[
-                String::from("8000"),
-                String::from("1000"),
-                String::from("1001"),
-                String::from("1002"),
-                String::from("1003"),
-                String::from("1004"),
-                String::from("1005"),
-            ]
+            HashSet::from([8000, 1000, 1001, 1002, 1003, 1004, 1005])
         );
     }
 
@@ -572,7 +540,7 @@ mod tests {
         let args = vec![String::new(), String::from("1000-1000")].into_iter();
         let config = Config::new(args).unwrap();
 
-        assert_eq!(config.port_filters, &[String::from("1000")]);
+        assert_eq!(config.port_filters, HashSet::from([1000]));
     }
 
     #[test]
@@ -630,10 +598,7 @@ mod tests {
             port_8.clone(),
         ];
 
-        filter_ports(
-            &mut listening_ports,
-            &[String::from("1337"), String::from("42069")],
-        );
+        filter_ports(&mut listening_ports, &HashSet::from([1337, 42069]));
 
         assert!(listening_ports.contains(&port_1));
         assert!(listening_ports.contains(&port_2));
@@ -657,7 +622,7 @@ mod tests {
 
         let mut listening_ports = vec![port_1, port_2, port_3];
 
-        filter_ports(&mut listening_ports, &[]);
+        filter_ports(&mut listening_ports, &HashSet::new());
 
         // This is correct. We happen to treat 'no-filters' as
         // 'keep-everything', but this is not `filter_ports()`' problem.
