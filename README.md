@@ -51,6 +51,31 @@ Transmiss  94671  Quentin  IPv6  TCP           *:51413   0.0   0.2   3Aug24   96
 </p>
 </details>
 
+## Waiting for services
+
+Block until no requested port is listening; useful when you're stopping
+servers:
+
+```console
+$ ports --wait-for-none 3000 8000-8003 && echo "All servers are stopped."
+```
+
+Block until at least one matching port is listening:
+
+```console
+$ ports --wait-for-some 3000 8000-8003 && echo "Servers are starting..."
+```
+
+Block until all requested ports are listening; useful when you're
+starting servers:
+
+```console
+$ ports --wait-for-all 3000 8000-8003 && echo "All servers are started."
+```
+
+Without port filters, `--wait-for-all` waits for every port from `1`
+through `65535`.
+
 ## Installation
 
 Install from [crates.io] with Cargo:

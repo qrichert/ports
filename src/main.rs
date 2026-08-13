@@ -2,11 +2,17 @@ use std::collections::HashSet;
 use std::env;
 use std::error::Error;
 use std::fmt;
+use std::thread;
+use std::time::Duration;
 
 use lessify::OutputPaged;
 use verynicetable::Table;
 
-use ports::{ListeningPort, ListeningPorts};
+use ports::{ListeningPort, ListeningPorts, ListeningPortsError};
+
+// 300ms is a nice compromise as it's an eternity for a computer, and a
+// reasonably fast worst-case for humans (even with run time added).
+const WAIT_INTERVAL: Duration = Duration::from_millis(300);
 
 #[derive(Debug, Eq, PartialEq, PartialOrd)]
 enum Mode {
@@ -15,11 +21,19 @@ enum Mode {
     VeryVerbose,
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum WaitFor {
+    None,
+    Some,
+    All,
+}
+
 #[derive(Debug, Eq, PartialEq)]
 struct Config {
     help: bool,
     version: bool,
     mode: Mode,
+    wait_for: Option<WaitFor>,
     // Set of ports that will be _retained_ in the output if non-empty.
     // If the set is empty, there won't be any filtering.
     port_filters: HashSet<u16>,
@@ -31,6 +45,7 @@ impl Default for Config {
             help: false,
             version: false,
             mode: Mode::Regular,
+            wait_for: None,
             port_filters: HashSet::new(),
         }
     }
@@ -62,6 +77,9 @@ impl Config {
                     }
                     config.mode = Mode::VeryVerbose;
                 }
+                "-N" | "--wait-for-none" => config.set_wait_for(WaitFor::None)?,
+                "-S" | "--wait-for-some" => config.set_wait_for(WaitFor::Some)?,
+                "-A" | "--wait-for-all" => config.set_wait_for(WaitFor::All)?,
                 // Single port (0-65535).
                 port if let Ok(port) = port.parse::<u16>() => {
                     config.port_filters.insert(port);
@@ -85,6 +103,16 @@ impl Config {
         }
 
         Ok(config)
+    }
+
+    fn set_wait_for(&mut self, wait_for: WaitFor) -> Result<(), String> {
+        if self.wait_for.is_some_and(|current| current != wait_for) {
+            return Err(String::from(
+                "Only one '--wait-for-*' argument type can be used",
+            ));
+        }
+        self.wait_for = Some(wait_for);
+        Ok(())
     }
 }
 
@@ -121,10 +149,15 @@ Filters:
   For example `{bin} 8000 8003` or `{bin} 8000-8005`.
 
 Options:
-  -h, --help            Show this message and exit.
-  -V, --version         Show the version and exit.
   -v, --verbose         Additional process info.
   -vv, --very-verbose   Even more extra info.
+
+  -N, --wait-for-none   Wait until no matching ports are listening.
+  -S, --wait-for-some   Wait until at least one matching port is listening.
+  -A, --wait-for-all    Wait until all matching ports are listening.
+
+  -h, --help            Show this message and exit.
+  -V, --version         Show the version and exit.
 ",
         description = env!("CARGO_PKG_DESCRIPTION"),
         bin = env!("CARGO_BIN_NAME"),
@@ -138,11 +171,11 @@ fn version() {
 
 #[cfg(not(tarpaulin_include))]
 fn run(config: &Config) -> Result<(), Box<dyn Error>> {
-    let mut listening_ports = ListeningPorts::all()?;
-
-    if !config.port_filters.is_empty() {
-        filter_ports(&mut listening_ports, &config.port_filters);
-    }
+    let mut listening_ports = if let Some(wait_for) = config.wait_for {
+        wait_for_listening_ports(wait_for, &config.port_filters)?
+    } else {
+        query_listening_ports(&config.port_filters)?
+    };
 
     if listening_ports.is_empty() {
         return Ok(());
@@ -169,20 +202,73 @@ fn run(config: &Config) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-/// Retain only ports in the `allowed` set.
-fn filter_ports(listening_ports: &mut Vec<ListeningPort>, allowed: &HashSet<u16>) {
-    listening_ports.retain(|x| {
-        let mut listening_on = x.name.as_str(); // '1337'
+#[cfg(not(tarpaulin_include))]
+fn wait_for_listening_ports(
+    wait_for: WaitFor,
+    port_filters: &HashSet<u16>,
+) -> Result<Vec<ListeningPort>, ListeningPortsError> {
+    loop {
+        let listening_ports = query_listening_ports(port_filters)?;
 
-        // If the port is given in the form '*:1337', extract it.
-        if let Some((_, port)) = listening_on.rsplit_once(':') {
-            listening_on = port;
+        if is_wait_condition_met(wait_for, port_filters, &listening_ports) {
+            return Ok(listening_ports);
         }
 
-        listening_on
-            .parse::<u16>()
-            .is_ok_and(|port| allowed.contains(&port))
-    });
+        thread::sleep(WAIT_INTERVAL);
+    }
+}
+
+fn is_wait_condition_met(
+    wait_for: WaitFor,
+    port_filters: &HashSet<u16>,
+    listening_ports: &[ListeningPort],
+) -> bool {
+    match wait_for {
+        WaitFor::None => listening_ports.is_empty(),
+        WaitFor::Some => !listening_ports.is_empty(),
+        WaitFor::All => {
+            let listening_port_numbers: HashSet<u16> = listening_ports
+                .iter()
+                .filter_map(listening_port_number)
+                .collect();
+            if port_filters.is_empty() {
+                // 1-65535
+                (1..=u16::MAX).all(|port| listening_port_numbers.contains(&port))
+            } else {
+                port_filters.is_subset(&listening_port_numbers)
+            }
+        }
+    }
+}
+
+#[cfg(not(tarpaulin_include))]
+fn query_listening_ports(
+    port_filters: &HashSet<u16>,
+) -> Result<Vec<ListeningPort>, ListeningPortsError> {
+    let mut listening_ports = ListeningPorts::all()?;
+
+    if !port_filters.is_empty() {
+        filter_ports(&mut listening_ports, port_filters);
+    }
+
+    Ok(listening_ports)
+}
+
+/// Retain only ports in the `allowed` set.
+fn filter_ports(listening_ports: &mut Vec<ListeningPort>, allowed: &HashSet<u16>) {
+    listening_ports
+        .retain(|port| listening_port_number(port).is_some_and(|port| allowed.contains(&port)));
+}
+
+fn listening_port_number(listening_port: &ListeningPort) -> Option<u16> {
+    let mut listening_on = listening_port.name.as_str(); // '1337'
+
+    // If the port is given in the form '*:1337', extract it.
+    if let Some((_, port)) = listening_on.rsplit_once(':') {
+        listening_on = port;
+    }
+
+    listening_on.parse::<u16>().ok()
 }
 
 #[cfg(not(tarpaulin_include))]
@@ -295,6 +381,12 @@ fn very_verbose(listening_ports: &[ListeningPort]) {
 mod tests {
     use super::*;
 
+    fn port(port: u16) -> ListeningPort {
+        let mut listening_port = ListeningPort::new();
+        listening_port.name = format!("*:{port}");
+        listening_port
+    }
+
     #[test]
     fn config_no_args() {
         let args = vec![String::new()].into_iter();
@@ -306,6 +398,7 @@ mod tests {
                 help: false,
                 version: false,
                 mode: Mode::Regular,
+                wait_for: None,
                 port_filters: HashSet::new(),
             }
         );
@@ -322,6 +415,7 @@ mod tests {
                 help: false,
                 version: false,
                 mode: Mode::Regular,
+                wait_for: None,
                 port_filters: HashSet::new(),
             }
         );
@@ -365,6 +459,192 @@ mod tests {
         let config = Config::new(args).unwrap();
 
         assert_eq!(config.mode, Mode::Regular);
+    }
+
+    #[test]
+    fn config_wait_for_none() {
+        let args = vec![String::new(), String::from("--wait-for-none")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.wait_for, Some(WaitFor::None));
+    }
+
+    #[test]
+    fn config_wait_for_none_short() {
+        let args = vec![String::new(), String::from("-N")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.wait_for, Some(WaitFor::None));
+    }
+
+    #[test]
+    fn config_wait_for_some() {
+        let args = vec![String::new(), String::from("--wait-for-some")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.wait_for, Some(WaitFor::Some));
+    }
+
+    #[test]
+    fn config_wait_for_some_short() {
+        let args = vec![String::new(), String::from("-S")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.wait_for, Some(WaitFor::Some));
+    }
+
+    #[test]
+    fn config_wait_for_all() {
+        let args = vec![String::new(), String::from("--wait-for-all")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.wait_for, Some(WaitFor::All));
+    }
+
+    #[test]
+    fn config_wait_for_all_short() {
+        let args = vec![String::new(), String::from("-A")].into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.wait_for, Some(WaitFor::All));
+    }
+
+    #[test]
+    fn config_wait_for_none_duplicate_is_no_op() {
+        let args = vec![
+            String::new(),
+            String::from("--wait-for-none"),
+            String::from("--wait-for-none"),
+        ]
+        .into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.wait_for, Some(WaitFor::None));
+    }
+
+    #[test]
+    fn config_wait_for_some_duplicate_is_no_op() {
+        let args = vec![
+            String::new(),
+            String::from("--wait-for-some"),
+            String::from("--wait-for-some"),
+        ]
+        .into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.wait_for, Some(WaitFor::Some));
+    }
+
+    #[test]
+    fn config_wait_for_all_duplicate_is_no_op() {
+        let args = vec![
+            String::new(),
+            String::from("--wait-for-all"),
+            String::from("--wait-for-all"),
+        ]
+        .into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.wait_for, Some(WaitFor::All));
+    }
+
+    #[test]
+    fn config_wait_for_duplicate_short_and_long_is_no_op() {
+        let args = vec![
+            String::new(),
+            String::from("-A"),
+            String::from("--wait-for-all"),
+        ]
+        .into_iter();
+        let config = Config::new(args).unwrap();
+
+        assert_eq!(config.wait_for, Some(WaitFor::All));
+    }
+
+    #[test]
+    fn config_wait_for_short_options_conflict() {
+        let args = vec![String::new(), String::from("-N"), String::from("-S")].into_iter();
+        let error = Config::new(args).unwrap_err();
+
+        assert_eq!(error, "Only one '--wait-for-*' argument type can be used");
+    }
+
+    #[test]
+    fn config_wait_for_none_conflicts_with_some() {
+        let args = vec![
+            String::new(),
+            String::from("--wait-for-none"),
+            String::from("--wait-for-some"),
+        ]
+        .into_iter();
+        let error = Config::new(args).unwrap_err();
+
+        assert_eq!(error, "Only one '--wait-for-*' argument type can be used");
+    }
+
+    #[test]
+    fn config_wait_for_none_conflicts_with_all() {
+        let args = vec![
+            String::new(),
+            String::from("--wait-for-none"),
+            String::from("--wait-for-all"),
+        ]
+        .into_iter();
+        let error = Config::new(args).unwrap_err();
+
+        assert_eq!(error, "Only one '--wait-for-*' argument type can be used");
+    }
+
+    #[test]
+    fn config_wait_for_some_conflicts_with_none() {
+        let args = vec![
+            String::new(),
+            String::from("--wait-for-some"),
+            String::from("--wait-for-none"),
+        ]
+        .into_iter();
+        let error = Config::new(args).unwrap_err();
+
+        assert_eq!(error, "Only one '--wait-for-*' argument type can be used");
+    }
+
+    #[test]
+    fn config_wait_for_some_conflicts_with_all() {
+        let args = vec![
+            String::new(),
+            String::from("--wait-for-some"),
+            String::from("--wait-for-all"),
+        ]
+        .into_iter();
+        let error = Config::new(args).unwrap_err();
+
+        assert_eq!(error, "Only one '--wait-for-*' argument type can be used");
+    }
+
+    #[test]
+    fn config_wait_for_all_conflicts_with_none() {
+        let args = vec![
+            String::new(),
+            String::from("--wait-for-all"),
+            String::from("--wait-for-none"),
+        ]
+        .into_iter();
+        let error = Config::new(args).unwrap_err();
+
+        assert_eq!(error, "Only one '--wait-for-*' argument type can be used");
+    }
+
+    #[test]
+    fn config_wait_for_all_conflicts_with_some() {
+        let args = vec![
+            String::new(),
+            String::from("--wait-for-all"),
+            String::from("--wait-for-some"),
+        ]
+        .into_iter();
+        let error = Config::new(args).unwrap_err();
+
+        assert_eq!(error, "Only one '--wait-for-*' argument type can be used");
     }
 
     #[test]
@@ -627,5 +907,55 @@ mod tests {
         // This is correct. We happen to treat 'no-filters' as
         // 'keep-everything', but this is not `filter_ports()`' problem.
         assert!(listening_ports.is_empty());
+    }
+
+    #[test]
+    fn wait_for_none_condition() {
+        assert!(is_wait_condition_met(WaitFor::None, &HashSet::new(), &[],));
+        assert!(!is_wait_condition_met(
+            WaitFor::None,
+            &HashSet::new(),
+            &[ListeningPort::new()],
+        ));
+    }
+
+    #[test]
+    fn wait_for_some_condition() {
+        assert!(!is_wait_condition_met(WaitFor::Some, &HashSet::new(), &[],));
+        assert!(is_wait_condition_met(
+            WaitFor::Some,
+            &HashSet::new(),
+            &[ListeningPort::new()],
+        ));
+    }
+
+    #[test]
+    fn wait_for_all_condition() {
+        let port_filters = HashSet::from([3000, 8000, 8001]);
+        assert!(!is_wait_condition_met(
+            WaitFor::All,
+            &port_filters,
+            &[port(3000), port(3000), port(8000)],
+        ));
+        assert!(is_wait_condition_met(
+            WaitFor::All,
+            &port_filters,
+            &[port(3000), port(8000), port(8001)],
+        ));
+    }
+
+    #[test]
+    fn wait_for_all_condition_without_filters() {
+        let every_port: Vec<ListeningPort> = (1..=u16::MAX).map(port).collect();
+        assert!(!is_wait_condition_met(
+            WaitFor::All,
+            &HashSet::new(),
+            &[port(3000)],
+        ));
+        assert!(is_wait_condition_met(
+            WaitFor::All,
+            &HashSet::new(),
+            &every_port,
+        ));
     }
 }
